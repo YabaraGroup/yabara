@@ -1,0 +1,19 @@
+{
+	"name": "yabara",
+	"version": "1.0.0",
+	"description": "Yabara est une application pour gérer les candidatures.",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Yannick-Yabara/-YABARA-.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Yannick-Yabara/-YABARA-/issues"
+	},
+	"homepage": "https://github.com/Yannick-Yabara/-YABARA-#readme"
+}
