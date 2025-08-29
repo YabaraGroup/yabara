@@ -1,33 +1,39 @@
 {
-	"name": "yabara",
-	"version": "1.0.0",
-	"description": "Yabara est une application pour gérer les candidatures.",
-	"scripts": {
-		"prepare": "husky || true",
-		"clean": "node ./bin/clean.js",
-		"dev": "concurrently -c green,yellow -t \"HH:mm:ss\" -p \"{name} {time}\" \"npm:dev:*\"",
-		"dev:client": "npm run dev --workspace=client",
-		"dev:server": "npm run dev --workspace=server"
-	},
-	"workspaces": [
-		"client",
-		"server"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/YabaraGroup/yabara.git"
-	},
-	"keywords": [],
-	"author": "anthony gorski",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/YabaraGroup/yabara/issues"
-	},
-	"homepage": "https://github.com/YabaraGroup/yabara#readme",
-	"devDependencies": {
-		"concurrently": "^9.2.1"
-	},
-	"dependencies": {
-		"husky": "^9.1.7"
-	}
+  "name": "yabara",
+  "version": "1.0.0",
+  "description": "Yabara est une application pour gérer les candidatures.",
+  "scripts": {
+    "prepare": "husky || true",
+    "clean": "node ./bin/clean.js",
+    "dev": "concurrently -c green,yellow -t \"HH:mm:ss\" -p \"{name} {time}\" \"npm:dev:*\"",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "prepush": "npm run format:check",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,tsx,json,md}\""
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "lint-staged": {
+    "*.{js,ts,tsx,json,md}": "prettier --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YabaraGroup/yabara.git"
+  },
+  "keywords": [],
+  "author": "anthony gorski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YabaraGroup/yabara/issues"
+  },
+  "homepage": "https://github.com/YabaraGroup/yabara#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "prettier": "^3.6.2"
+  }
 }

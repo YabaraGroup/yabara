@@ -31,4 +31,4 @@ Donnez un ⭐️ si ce projet vous a aidé !
 
 ### 🗃️ Version
 
--   **v1.0.0** - First commit
+- **v1.0.0** - First commit
