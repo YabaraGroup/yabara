@@ -27,10 +27,6 @@ Les contributions, les problèmes et les demandes de fonctionnalités sont les b
 
 Donnez un ⭐️ si ce projet vous a aidé !
 
-## 📝 License
-
-This project is [ISC](https://github.com/Yannick-Yabara/-YABARA-/blob/master/LICENSE) licensed.
-
 ---
 
 ### 🗃️ Version
