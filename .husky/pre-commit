@@ -1,0 +1,18 @@
+fileList=$(git diff --staged --name-only :^package-lock.json :^README.md :^client :^server)
+
+echo '----- Checking Root...'
+
+if [ ! -z "$fileList" ]
+then
+  echo "error: Unauthorized modifications\n"
+
+  echo "$fileList\n"
+
+  echo "use 'git restore --staged ...' to fix the problem"
+
+  exit 1
+fi
+
+echo '----- Done!'
+
+npx validate-branch-name
