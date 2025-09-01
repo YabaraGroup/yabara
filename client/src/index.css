@@ -1,1 +1,13 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@theme {
+  --color-gold: #d6b770;
+  --color-dark-gold: #b5944b;
+  --color-text-grey: #9ec3d9;
+}
+
+/** Page Soon **/
+
+.background {
+  @apply bg-gradient-to-br from-[#384D6F] to-[#416D96] h-screen flex  flex-col items-center justify-center;
+}

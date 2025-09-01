@@ -8,6 +8,7 @@ import './index.css';
 import App from './App.tsx';
 import NotFound from './pages/NotFound.tsx';
 import Layout from './pages/Layout.tsx';
+import Soon from './pages/Soon.tsx';
 
 // Find the root element in the HTML document
 const rootElement = document.getElementById('root');
@@ -17,7 +18,7 @@ if (rootElement == null) {
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/app',
     element: <Layout />,
     children: [
       {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
         element: <NotFound />,
       },
     ],
+  },
+  {
+    path: '/',
+    element: <Soon />,
   },
 ]);
 
