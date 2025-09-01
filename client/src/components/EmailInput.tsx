@@ -9,7 +9,6 @@ export default function EmailInput() {
         className="flex-1 px-6 py-4 bg-transparent text-white placeholder-white focus:outline-none"
       />
 
-      {/* group = permet de cibler les enfants au hover */}
       <button
         className="group relative flex items-center gap-3 bg-gold hover:bg-dark-gold 
                    text-gray-900 font-semibold px-5 py-4 rounded-full transition-colors 
