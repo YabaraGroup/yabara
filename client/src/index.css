@@ -2,12 +2,21 @@
 
 @theme {
   --color-gold: #d6b770;
-  --color-dark-gold: #b5944b;
+  --color-dark-gold: #c79c34;
   --color-text-grey: #9ec3d9;
+  --color-dark-blue: #314466;
 }
 
 /** Page Soon **/
 
 .background {
-  @apply bg-gradient-to-br from-[#384D6F] to-[#416D96] h-screen flex  flex-col items-center justify-center;
+  background-color: #314466;
+  @apply h-screen flex  flex-col items-center justify-center;
+}
+
+/** Responsive Styles **/
+@media screen and (min-width: 992px) {
+  .background {
+    background: linear-gradient(140.21deg, #314466 24.12%, #449dd1 184.14%);
+  }
 }
