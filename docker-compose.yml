@@ -23,9 +23,10 @@ services:
       - ./traefik/dynamic:/dynamic:ro
     labels:
       - 'traefik.enable=true'
+      - 'traefik.http.services.traefik.loadbalancer.server.port=8080'
       - 'traefik.http.middlewares.secure-headers.headers.framedeny=true'
       # Dashboard Traefik (optionnel)
-      - 'traefik.http.routers.traefik.rule=Host(`app.yabara.co`) && PathPrefix(`/traefik`)'
+      - 'traefik.http.routers.traefik.rule=Host(`traefik.yabara.co`)'
       - 'traefik.http.routers.traefik.service=api@internal'
       - 'traefik.http.routers.traefik.entrypoints=websecure'
       - 'traefik.http.routers.traefik.tls.certresolver=le'
@@ -74,7 +75,10 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-    command: ['--default-authentication-plugin=mysql_native_password']
+    command:
+      - '--default-authentication-plugin=mysql_native_password'
+      - '--api.dashboard=true'
+      - '--api.insecure=false'
     restart: unless-stopped
     networks: [internal]
 
