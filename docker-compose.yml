@@ -7,9 +7,9 @@ services:
       - --providers.docker.exposedbydefault=false
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
-      - --entrypoints.web.http.redirections.entrypoint.to=websecure
-      - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --certificatesresolvers.le.acme.email=${TRAEFIK_ACME_EMAIL}
+      - --api.dashboard=true
+      - --api.insecure=false
+      - --certificatesresolvers.le.acme.email=ton.email@domaine.com
       - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.le.acme.httpchallenge=true
       - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
@@ -23,13 +23,10 @@ services:
       - ./traefik/dynamic:/dynamic:ro
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.services.traefik.loadbalancer.server.port=8080'
-      - 'traefik.http.middlewares.secure-headers.headers.framedeny=true'
-      # Dashboard Traefik (optionnel)
       - 'traefik.http.routers.traefik.rule=Host(`traefik.yabara.co`)'
-      - 'traefik.http.routers.traefik.service=api@internal'
       - 'traefik.http.routers.traefik.entrypoints=websecure'
       - 'traefik.http.routers.traefik.tls.certresolver=le'
+      - 'traefik.http.services.traefik.loadbalancer.server.port=8080'
     restart: unless-stopped
     networks: [traefik]
 
