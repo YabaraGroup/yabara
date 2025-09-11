@@ -9,7 +9,7 @@ services:
       - --entrypoints.websecure.address=:443
       - --api.dashboard=true
       - --api.insecure=false
-      - --certificatesresolvers.le.acme.email=ton.email@domaine.com
+      - --certificatesresolvers.le.acme.email=ton.email@gmail.com
       - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.le.acme.httpchallenge=true
       - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
@@ -37,7 +37,7 @@ services:
     container_name: client
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.client.rule=Host(`app.yabara.co`)'
+      - 'traefik.http.routers.client.rule=Host(`yabara.co`)'
       - 'traefik.http.routers.client.entrypoints=websecure'
       - 'traefik.http.routers.client.tls.certresolver=le'
       - 'traefik.http.services.client.loadbalancer.server.port=80'
@@ -52,6 +52,10 @@ services:
     container_name: server
     environment:
       - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_NAME=${MYSQL_DATABASE}
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.server.rule=Host(`api.yabara.co`)'
@@ -72,10 +76,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-    command:
-      - '--default-authentication-plugin=mysql_native_password'
-      - '--api.dashboard=true'
-      - '--api.insecure=false'
+    command: ['--default-authentication-plugin=mysql_native_password']
     restart: unless-stopped
     networks: [internal]
 
