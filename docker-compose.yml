@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   traefik:
     image: traefik:v2.11
@@ -9,7 +11,7 @@ services:
       - --entrypoints.websecure.address=:443
       - --api.dashboard=true
       - --api.insecure=false
-      - --certificatesresolvers.le.acme.email=ton.email@gmail.com
+      - --certificatesresolvers.le.acme.email=yannickagbohoun@gmail.com
       - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.le.acme.httpchallenge=true
       - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
@@ -19,14 +21,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/lib/traefik:/letsencrypt
-      - ./traefik/traefik.yml:/traefik.yml:ro
-      - ./traefik/dynamic:/dynamic:ro
     labels:
       - 'traefik.enable=true'
+      # Dashboard
       - 'traefik.http.routers.traefik.rule=Host(`traefik.yabara.co`)'
       - 'traefik.http.routers.traefik.entrypoints=websecure'
       - 'traefik.http.routers.traefik.tls.certresolver=le'
-      - 'traefik.http.services.traefik.loadbalancer.server.port=8080'
+      - 'traefik.http.routers.traefik.service=api@internal'
     restart: unless-stopped
     networks: [traefik]
 
