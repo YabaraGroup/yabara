@@ -9,6 +9,7 @@ Yabara est une application pour gérer les candidatures, développée avec une a
 ## Commandes essentielles
 
 ### Développement
+
 ```bash
 # Démarrer l'environnement de développement complet
 npm run dev
@@ -21,6 +22,7 @@ npm run dev:server
 ```
 
 ### Formatage et qualité du code
+
 ```bash
 # Formater tout le code avec Prettier
 npm run format
@@ -33,6 +35,7 @@ npm run lint --workspace=client
 ```
 
 ### Build et production
+
 ```bash
 # Build le client pour la production
 npm run build --workspace=client
@@ -42,6 +45,7 @@ npm run preview --workspace=client
 ```
 
 ### Maintenance
+
 ```bash
 # Nettoyer les dépendances et fichiers temporaires
 npm run clean
@@ -50,6 +54,7 @@ npm run clean
 ## Architecture du projet
 
 ### Structure des workspaces
+
 - **Racine** : Configuration partagée, scripts globaux, et dépendances communes
 - **client/** : Application React avec Vite, Tailwind CSS, et React Router
 - **server/** : Serveur Node.js (en cours de développement)
@@ -57,14 +62,16 @@ npm run clean
 ### Stack technologique
 
 #### Client (React)
+
 - **Framework** : React 19 avec TypeScript
-- **Build** : Vite avec plugins React et Tailwind CSS  
+- **Build** : Vite avec plugins React et Tailwind CSS
 - **Styling** : Tailwind CSS v4
 - **Routing** : React Router v7
 - **Icons** : Lucide React
 - **Linting** : ESLint avec TypeScript et React plugins
 
 #### Configuration des outils
+
 - **Prettier** : Formatage automatique avec hooks pre-commit
 - **Husky** : Hooks Git pour maintenir la qualité du code
 - **lint-staged** : Formater uniquement les fichiers modifiés
@@ -72,6 +79,7 @@ npm run clean
 ### Patterns d'organisation du code
 
 #### Client React
+
 - `/src/components/` : Composants réutilisables (Avatar, Modal, Navbar, etc.)
 - `/src/pages/` : Pages de l'application avec Layout principal
 - Structure de routage avec pages protégées et layout partagé
@@ -79,15 +87,18 @@ npm run clean
 ## Flux de développement
 
 ### Git Workflow
-- Branches principales : `dev`, `staging`  
+
+- Branches principales : `dev`, `staging`
 - CI/CD automatique avec vérification du formatage sur toutes les branches
 - Hooks pre-commit et pre-push pour maintenir la qualité
 
 ### Standards de code
+
 - Utiliser Prettier pour le formatage automatique
 - Respecter la configuration ESLint pour TypeScript et React
 - Maintenir la structure de workspace pour une séparation client/serveur claire
 
 ## Configuration du serveur de développement
+
 - Client : http://localhost:3000 (port strict)
 - Le serveur de développement Vite utilise HMR pour un rechargement rapide
