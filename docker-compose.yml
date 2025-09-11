@@ -48,8 +48,12 @@ services:
       - server
     restart: unless-stopped
     networks:
-      - traefik
-      - internal
+      traefik:
+        aliases:
+          - client
+      internal:
+        aliases:
+          - client
 
   server:
     build:
@@ -68,8 +72,12 @@ services:
       - mysql
     restart: unless-stopped
     networks:
-      - traefik
-      - internal
+      traefik:
+        aliases:
+          - server
+      internal:
+        aliases:
+          - server
 
   mysql:
     image: mysql:8.0
@@ -97,8 +105,12 @@ services:
       - PMA_PASSWORD=${MYSQL_PASSWORD}
       - PMA_ARBITRARY=1
     networks:
-      - traefik
-      - internal
+      traefik:
+        aliases:
+          - phpmyadmin
+      internal:
+        aliases:
+          - phpmyadmin
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.phpmyadmin.rule=Host(`pma.${APP_HOST}`)'
@@ -111,5 +123,7 @@ volumes:
 
 networks:
   traefik:
+    external: true
+    name: yabara_traefik
   internal:
     driver: bridge
