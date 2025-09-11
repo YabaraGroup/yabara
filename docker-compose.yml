@@ -34,8 +34,8 @@ services:
 
   client:
     build:
-      context: ./client
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: client/Dockerfile
     container_name: client
     labels:
       - 'traefik.enable=true'
@@ -49,8 +49,8 @@ services:
 
   server:
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: server/Dockerfile
     container_name: server
     environment:
       - NODE_ENV=production
