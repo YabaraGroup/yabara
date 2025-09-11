@@ -1,7 +1,8 @@
+# server/Dockerfile
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-# Copie package.json du server + lock de la racine
+# Copie package.json du server + lockfile global
 COPY server/package.json ./package.json
 COPY package-lock.json ./package-lock.json
 
@@ -12,6 +13,7 @@ COPY server/ .
 
 RUN npm run build
 
+# ---- Runtime ----
 FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production
