@@ -9,7 +9,7 @@ services:
       - --entrypoints.websecure.address=:443
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --certificatesresolvers.le.acme.email=${TRAEFIK_ACME_EMAIL}
+      - --certificatesresolvers.le.acme.email=yannickagbohoun@gmail.com
       - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.le.acme.httpchallenge=true
       - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
@@ -25,7 +25,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.middlewares.secure-headers.headers.framedeny=true'
-      - 'traefik.http.routers.traefik.rule=Host(`traefik.${APP_HOST}`)'
+      - 'traefik.http.routers.traefik.rule=Host(`traefik.yabara.co`)'
       - 'traefik.http.routers.traefik.entrypoints=websecure'
       - 'traefik.http.routers.traefik.tls.certresolver=le'
       - 'traefik.http.routers.traefik.service=api@internal'
@@ -40,7 +40,7 @@ services:
     container_name: client
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.client.rule=Host(`${APP_HOST}`)'
+      - 'traefik.http.routers.client.rule=Host(`yabara.co`)'
       - 'traefik.http.routers.client.entrypoints=websecure'
       - 'traefik.http.routers.client.tls.certresolver=le'
       - 'traefik.http.services.client.loadbalancer.server.port=80'
@@ -64,10 +64,10 @@ services:
       - NODE_ENV=production
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.server.rule=Host(`${API_HOST}`)'
+      - 'traefik.http.routers.server.rule=Host(`api.yabara.co`)'
       - 'traefik.http.routers.server.entrypoints=websecure'
       - 'traefik.http.routers.server.tls.certresolver=le'
-      - 'traefik.http.services.server.loadbalancer.server.port=${BACKEND_PORT}'
+      - 'traefik.http.services.server.loadbalancer.server.port=3310'
     depends_on:
       - mysql
     restart: unless-stopped
@@ -113,7 +113,7 @@ services:
           - phpmyadmin
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.phpmyadmin.rule=Host(`pma.${APP_HOST}`)'
+      - 'traefik.http.routers.phpmyadmin.rule=Host(`pma.yabara.co`)'
       - 'traefik.http.routers.phpmyadmin.entrypoints=websecure'
       - 'traefik.http.routers.phpmyadmin.tls.certresolver=le'
       - 'traefik.http.services.phpmyadmin.loadbalancer.server.port=80'
