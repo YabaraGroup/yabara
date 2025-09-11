@@ -25,8 +25,6 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.middlewares.secure-headers.headers.framedeny=true'
-
-      # Dashboard accessible sur https://traefik.${APP_HOST}/dashboard/
       - 'traefik.http.routers.traefik.rule=Host(`traefik.${APP_HOST}`)'
       - 'traefik.http.routers.traefik.entrypoints=websecure'
       - 'traefik.http.routers.traefik.tls.certresolver=le'
@@ -36,8 +34,8 @@ services:
 
   client:
     build:
-      context: .
-      dockerfile: client/Dockerfile
+      context: ./client
+      dockerfile: Dockerfile
     container_name: client
     labels:
       - 'traefik.enable=true'
@@ -51,8 +49,8 @@ services:
 
   server:
     build:
-      context: .
-      dockerfile: server/Dockerfile
+      context: ./server
+      dockerfile: Dockerfile
     container_name: server
     environment:
       - NODE_ENV=production
@@ -79,6 +77,25 @@ services:
     command: ['--default-authentication-plugin=mysql_native_password']
     restart: unless-stopped
     networks: [internal]
+
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    container_name: phpmyadmin
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=${MYSQL_USER}
+      - PMA_PASSWORD=${MYSQL_PASSWORD}
+      - PMA_ARBITRARY=1
+    networks:
+      - traefik
+      - internal
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.phpmyadmin.rule=Host(`pma.${APP_HOST}`)'
+      - 'traefik.http.routers.phpmyadmin.entrypoints=websecure'
+      - 'traefik.http.routers.phpmyadmin.tls.certresolver=le'
+      - 'traefik.http.services.phpmyadmin.loadbalancer.server.port=80'
 
 volumes:
   mysql_data:
