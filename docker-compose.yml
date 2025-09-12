@@ -111,7 +111,7 @@ services:
       - 'traefik.http.routers.phpmyadmin.entrypoints=websecure'
       - 'traefik.http.routers.phpmyadmin.tls.certresolver=le'
       - 'traefik.http.services.phpmyadmin.loadbalancer.server.port=80'
-      - 'traefik.http.middlewares.pma-auth.basicauth.users=${PMA_AUTH}'
+      - traefik.http.middlewares.pma-auth.basicauth.users=${PMA_AUTH}
       - 'traefik.http.routers.phpmyadmin.middlewares=pma-auth'
     networks:
       - traefik
