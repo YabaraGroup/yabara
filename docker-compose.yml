@@ -13,19 +13,19 @@ services:
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --certificatesresolvers.le.acme.email=yannickagbohoun@gmail.com
-      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.le.acme.storage=/etc/traefik/acme.json
       - --certificatesresolvers.le.acme.httpchallenge=true
       - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
       - --api.dashboard=true
     ports:
       - '80:80'
       - '443:443'
-      - '8080:8080' # Dashboard, attention à bien le protéger
+      - '8080:8080' # Dashboard (protège-le avec middleware basicAuth)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/lib/traefik:/letsencrypt
-      - ./traefik/traefik.yml:/traefik.yml:ro
-      - ./traefik/dynamic:/dynamic:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+      - ./traefik/acme.json:/etc/traefik/acme.json
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.traefik.rule=Host(`traefik.yabara.co`)'
@@ -37,6 +37,7 @@ services:
     restart: unless-stopped
     networks:
       - traefik
+      - internal
 
   # 🌐 Frontend React
   client:
@@ -51,12 +52,8 @@ services:
       - 'traefik.http.routers.client.entrypoints=websecure'
       - 'traefik.http.routers.client.tls.certresolver=le'
     networks:
-      traefik:
-        aliases:
-          - client
-      internal:
-        aliases:
-          - client
+      - traefik
+      - internal
 
   # ⚙️ Backend Node.js
   server:
@@ -76,12 +73,8 @@ services:
       - mysql
     restart: unless-stopped
     networks:
-      traefik:
-        aliases:
-          - server
-      internal:
-        aliases:
-          - server
+      - traefik
+      - internal
 
   # 🛢️ Base MySQL
   mysql:
@@ -112,13 +105,6 @@ services:
       - UPLOAD_LIMIT=100M
       - MEMORY_LIMIT=256M
       - MAX_EXECUTION_TIME=600
-    networks:
-      traefik:
-        aliases:
-          - phpmyadmin
-      internal:
-        aliases:
-          - phpmyadmin
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.phpmyadmin.rule=Host(`pma.yabara.co`)'
@@ -127,13 +113,15 @@ services:
       - 'traefik.http.services.phpmyadmin.loadbalancer.server.port=80'
       - 'traefik.http.middlewares.pma-auth.basicauth.users=${PMA_USER}:${PMA_PASSWORD}'
       - 'traefik.http.routers.phpmyadmin.middlewares=pma-auth'
+    networks:
+      - traefik
+      - internal
 
 volumes:
   mysql_data:
 
 networks:
   traefik:
-    external: true
-    name: yabara_traefik
+    driver: bridge
   internal:
     driver: bridge
