@@ -6,7 +6,7 @@ export async function verifyTurnstile(req: Request, res: Response, next: NextFun
       (req.body && (req.body['cf-turnstile-response'] || req.body.turnstileToken)) ||
       (req.headers['x-turnstile-token'] as string | undefined);
 
-    console.log('Token reçu du front:', token);
+    console.log('TURNSTILE_SECRET_KEY =', process.env.TURNSTILE_SECRET_KEY);
 
     if (!token) return res.status(400).json({ error: 'captcha_required' });
 
