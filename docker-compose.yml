@@ -61,6 +61,8 @@ services:
       context: .
       dockerfile: Dockerfile.server
     container_name: server
+    env_file:
+      - ./server/.env
     environment:
       - NODE_ENV=production
     labels:
