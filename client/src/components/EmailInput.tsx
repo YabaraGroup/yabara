@@ -63,8 +63,6 @@ export default function EmailInput() {
     };
   }, []);
 
-  console.log('Turnstile token:', token);
-
   const validateEmail = (val: string) => /\S+@\S+\.\S+/.test(val);
 
   const handleSubmit = async (e: React.FormEvent) => {
