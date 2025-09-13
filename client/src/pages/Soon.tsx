@@ -12,11 +12,8 @@ function Soon() {
           <span className="text-5xl sm:text-9xl">arrive bientôt !</span>
         </p>
         <div className="font-extralight text-xl my-10 text-text-grey">
-          <p>
-            Découvre la nouvelle plateforme emploi pensée pour la{' '}
-            <span className="font-bold">Côte d’Ivoire !</span>
-          </p>
-          <p>Plus rapide, plus simple, plus proche de toi !</p>
+          <p>Soyez parmi les premiers à rejoindre la plateforme qui transformera</p>
+          <p>la façon de recruter et de trouver un emploi en Côte d’Ivoire.</p>
         </div>
       </div>
       <div>
