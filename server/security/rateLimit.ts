@@ -8,7 +8,6 @@ export const emailLimiter = rateLimit({
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   keyGenerator: (req: Request) => {
-    // Utiliser ipKeyGenerator pour gérer correctement IPv4 et IPv6
     const ip = ipKeyGenerator(req as any);
     const email = req.body?.email || 'anonymous';
     return `${ip}:${email}`;
