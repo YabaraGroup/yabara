@@ -7,11 +7,15 @@ import { createEmail } from '../../controllers/emailController';
 
 export const router = Router();
 
+// Endpoint pour s'inscrire à la liste d'attente
+
 router.post(
-  '/email',
+  '/comingsoon',
   emailLimiter, // 1) limite le flood
   validateEmail, // 2) payload propre
   antiBot, // 3) honeypot + tempo mini
   verifyTurnstile, // 4) token Turnstile côté serveur
   createEmail, // 5) logique métier
 );
+
+export default router;
