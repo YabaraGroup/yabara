@@ -1,20 +1,6 @@
-import express from 'express';
+import app from './src/app';
 
-const app = express();
-const port = Number(process.env.PORT) || 3310;
-
-// Middleware pour parser JSON
-app.use(express.json());
-
-// Route test
-app.get('/', (req, res) => {
-  res.json({ message: '🚀 Yabara API is running!' });
-});
-
-// Exemple d'endpoint API
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello from the backend 👋' });
-});
+const port = Number(process.env.BACKEND_PORT) || 3310;
 
 // Lancement du serveur
 app.listen(port, '0.0.0.0', () => {
