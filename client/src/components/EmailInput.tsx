@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import Modal from './Modal';
+import api from '../utils/fetch'; // ton instance axios
 
 declare global {
   interface Window {
@@ -12,49 +13,46 @@ declare global {
   }
 }
 
-const ENDPOINT = 'http://localhost:3310/api/comingsoon';
+// On met l'endpoint une seule fois ici
+const ENDPOINT = '/api/comingsoon';
 
 export default function EmailInput() {
-  const [email, setEmail] = useState<string>('');
-  const [error, setError] = useState<string>('');
-  const [success, setSuccess] = useState<boolean>(false);
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Anti-bot : tempo minimal
-  const [startedAt] = useState<number>(() => Date.now());
-
-  // Turnstile
-  const containerRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<string | null>(null);
+  const [startedAt] = useState(() => Date.now()); // tempo anti-bot
   const [token, setToken] = useState<string | null>(null);
 
-  // Petite aide pour attendre que le script Turnstile soit prêt
+  const containerRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+
+  // --- Setup Turnstile widget ---
   useEffect(() => {
     let interval: number | undefined;
 
-    const tryRender = () => {
+    const renderWidget = () => {
       if (!containerRef.current || !window.turnstile) return;
-      // Rend le widget et récupère l'id pour reset après submit
+
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
         sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
         callback: (t: string) => setToken(t),
         'expired-callback': () => setToken(null),
-        action: 'email', // optionnel, cohérent avec la vérif serveur
+        action: 'email',
       });
-      // une fois rendu, on arrête de poll
+
       if (interval) window.clearInterval(interval);
     };
 
     if (window.turnstile) {
-      tryRender();
+      renderWidget();
     } else {
-      // le script est async → on poll très légèrement
-      interval = window.setInterval(tryRender, 200);
+      interval = window.setInterval(renderWidget, 200);
     }
 
     return () => {
       if (interval) window.clearInterval(interval);
-      // Nettoyage éventuel du widget si besoin
       if (widgetIdRef.current && window.turnstile) {
         try {
           window.turnstile.remove(widgetIdRef.current);
@@ -63,8 +61,10 @@ export default function EmailInput() {
     };
   }, []);
 
+  // --- Validation email simple ---
   const validateEmail = (val: string) => /\S+@\S+\.\S+/.test(val);
 
+  // --- Soumission ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -73,49 +73,48 @@ export default function EmailInput() {
       setError('Veuillez indiquer une adresse email valide');
       return;
     }
+
     if (!token) {
-      setError('Vérification anti-bot en cours… Patientez une seconde puis réessayez.');
+      setError('Vérification anti-bot en cours… Réessayez dans une seconde.');
       return;
     }
 
     setLoading(true);
+
     try {
-      // Honeypot : ce champ DOIT rester vide (on le lit depuis le DOM)
       const honeypot =
         (document.getElementById('website-hp') as HTMLInputElement | null)?.value ?? '';
 
       const payload = {
         email,
-        // Si ton backend suit mon exemple Zod (message requis), on met un message par défaut :
         message: 'newsletter_signup',
         startedAt,
-        website: honeypot, // honeypot
-        turnstileToken: token, // token Turnstile → vérifié côté serveur
+        website: honeypot,
+        turnstileToken: token,
       };
 
-      const res = await fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const res = await api.post(ENDPOINT, payload);
 
-      if (res.ok) {
+      if (res.status === 200) {
         setSuccess(true);
         setEmail('');
       } else {
-        const data = await res.json().catch(() => ({}));
-        // remonte les erreurs "connues"
-        if (data?.error === 'captcha_failed')
-          setError('Échec de la vérification anti-bot. Réessayez.');
-        else if (data?.error === 'too_fast') setError('Trop rapide. Réessayez dans 2–3 secondes.');
-        else if (data?.error === 'bot_detected') setError('Requête suspecte bloquée.');
-        else setError('Oups, une erreur est survenue. Réessayez.');
+        setError('Oups, une erreur est survenue. Réessayez.');
       }
-    } catch {
-      setError('Impossible de se connecter. Vérifiez votre connexion.');
+    } catch (err: any) {
+      const data = err.response?.data;
+
+      if (data?.error === 'captcha_failed') {
+        setError('Échec de la vérification anti-bot. Réessayez.');
+      } else if (data?.error === 'too_fast') {
+        setError('Trop rapide. Réessayez dans 2–3 secondes.');
+      } else if (data?.error === 'bot_detected') {
+        setError('Requête suspecte bloquée.');
+      } else {
+        setError("Impossible d'envoyer la requête. Vérifiez votre connexion.");
+      }
     } finally {
       setLoading(false);
-      // Reset du widget pour regénérer un token tout neuf
       if (widgetIdRef.current && window.turnstile) {
         try {
           window.turnstile.reset(widgetIdRef.current);
@@ -144,7 +143,7 @@ export default function EmailInput() {
                      text-white placeholder-white focus:outline-none"
         />
 
-        {/* Honeypot (champ qui doit rester vide) */}
+        {/* Honeypot */}
         <input
           id="website-hp"
           name="website"
@@ -152,7 +151,6 @@ export default function EmailInput() {
           tabIndex={-1}
           autoComplete="off"
           aria-hidden="true"
-          // Visuellement hors écran, ET pas focusable
           className="absolute -left-[9999px] top-auto w-px h-px opacity-0"
         />
 
@@ -174,16 +172,12 @@ export default function EmailInput() {
       </form>
 
       {/* Widget Turnstile */}
-      <div
-        ref={containerRef}
-        // Pour rester joli dans ton layout, on masque simplement l'espace si le widget est large
-        className="mt-2 sm:mt-0 sm:ml-3"
-      />
+      <div ref={containerRef} className="mt-2 sm:mt-0 sm:ml-3" />
 
-      {/* Message d’erreur inline */}
+      {/* Erreurs */}
       {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
 
-      {/* Popup de succès */}
+      {/* Modal succès */}
       {success && <Modal setSuccess={setSuccess} />}
     </>
   );
