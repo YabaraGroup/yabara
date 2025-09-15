@@ -1,5 +1,5 @@
 import app from './src/app';
-import '../server/database/checkConnection';
+import './database/checkConnection';
 
 const port = Number(process.env.BACKEND_PORT) || 3310;
 
