@@ -20,5 +20,17 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            set -e
+
+            echo "➡️ Passage dans le dossier du projet"
             cd ~/yabara
-            ./deploy.sh
+
+            echo "➡️ Pull des dernières modifs"
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "➡️ Redémarrage des conteneurs"
+            docker compose down
+            docker compose up -d --build --remove-orphans
+
+            echo "✅ Déploiement terminé !"

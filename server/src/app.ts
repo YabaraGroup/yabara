@@ -26,10 +26,15 @@ app.get('/', (req, res) => {
   res.json({ message: '🚀 Yabara API is running!' });
 });
 
-// Gestion des erreurs
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+import type { ErrorRequestHandler } from 'express';
+
+const logErrors: ErrorRequestHandler = (err, req, res, next) => {
+  console.error(err);
+  console.error('on req:', req.method, req.path);
+
+  next(err);
+};
+
+app.use(logErrors);
 
 export default app;
