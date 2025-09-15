@@ -72,7 +72,8 @@ services:
       - 'traefik.http.routers.server.tls.certresolver=le'
       - 'traefik.http.services.server.loadbalancer.server.port=${BACKEND_PORT}'
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - traefik
@@ -94,6 +95,11 @@ services:
     restart: unless-stopped
     networks:
       - internal
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-p${MYSQL_ROOT_PASSWORD}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # 🛠️ PhpMyAdmin (sécurisé)
   phpmyadmin:
