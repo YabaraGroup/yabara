@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { emailLimiter } from '../../security/rateLimit';
-import { validateEmail } from '../../middleware/validateEmail';
-import { antiBot } from '../../middleware/antiBot';
-import { verifyTurnstile } from '../../middleware/verifyTurnstile';
-import { createEmail } from '../../controllers/emailController';
+import { validateEmail } from '../middleware/validateEmail';
+import { antiBot } from '../middleware/antiBot';
+import { verifyTurnstile } from '../middleware/verifyTurnstile';
+import { createEmail } from '../controllers/emailController';
 
 export const router = Router();
 
