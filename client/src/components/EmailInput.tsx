@@ -87,7 +87,6 @@ export default function EmailInput() {
 
       const payload = {
         email,
-        message: 'newsletter_signup',
         startedAt,
         website: honeypot,
         turnstileToken: token,
@@ -95,7 +94,7 @@ export default function EmailInput() {
 
       const res = await api.post(ENDPOINT, payload);
 
-      if (res.status === 200) {
+      if (res.status === 201) {
         setSuccess(true);
         setEmail('');
       } else {
