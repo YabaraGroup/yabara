@@ -1,5 +1,25 @@
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Inter';
+  src:
+    local('Inter'),
+    url('/src/assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src:
+    local('Gilroy'),
+    url('/src/assets/fonts/Gilroy/Gilroy-Regular.woff') format('woff'),
+    url('/src/assets/fonts/Gilroy/Gilroy-Regular.ttf') format('truetype'),
+    url('/src/assets/fonts/Gilroy/Gilroy-Regular.eot') format('embedded-opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
 @theme {
   --color-gold: #d6b770;
   --color-dark-gold: #c79c34;
@@ -7,11 +27,23 @@
   --color-dark-blue: #314466;
 }
 
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+.title {
+  font-family: 'Gilroy', sans-serif;
+  font-weight: 800;
+}
+
 /** Page Soon **/
+
+.container-soon {
+  @apply h-screen flex  flex-col items-center justify-center;
+}
 
 .background {
   background-color: #314466;
-  @apply h-screen flex  flex-col items-center justify-center;
 }
 
 /** Responsive Styles **/
