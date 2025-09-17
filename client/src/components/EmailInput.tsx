@@ -159,11 +159,11 @@ export default function EmailInput() {
           disabled={!token || loading}
           className="group relative flex items-center justify-between gap-3 
                      bg-gold hover:bg-dark-gold text-gray-900 
-                     px-5 py-4 rounded-full sm:rounded-full 
+                     px-4 py-4 rounded-full sm:rounded-full 
                      transition-colors focus:outline-none focus:ring-2 focus:ring-white font-light
                      disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          <span>{loading ? 'Envoi…' : 'Me notifier'}</span>
+          <span className="whitespace-nowrap">{loading ? 'Envoi…' : 'Me notifier'}</span>
           <span className="grid place-items-center w-8 h-8 rounded-full bg-white/60 overflow-hidden transition-transform duration-300 group-hover:translate-x-2">
             <ArrowRight className="w-5 h-5" />
           </span>

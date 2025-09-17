@@ -2,7 +2,7 @@ import { Outlet } from 'react-router';
 
 function Layout() {
   return (
-    <main>
+    <main className="background">
       <Outlet />
     </main>
   );
