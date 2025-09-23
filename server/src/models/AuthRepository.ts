@@ -1,0 +1,62 @@
+import databaseClient from '../../database/client';
+import type { User } from '../types/UserInterface';
+
+class AuthRepository {
+  private db = databaseClient;
+  private tableNameTalent = 'talent';
+
+  async createUser(userData: User): Promise<number> {
+    try {
+      const {
+        firstname,
+        lastname,
+        email,
+        password,
+        phone,
+        education_level,
+        avatar_url,
+        referral_link,
+        id_job_family,
+      } = userData;
+
+      const [rows]: any = await this.db.query(
+        `INSERT INTO ${this.tableNameTalent} (firstname, lastname, email, password, phone, education_level, avatar_url, referral_link, id_job_family, id_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          firstname,
+          lastname,
+          email,
+          password,
+          phone,
+          education_level,
+          avatar_url,
+          referral_link,
+          id_job_family,
+          1,
+        ],
+      );
+
+      return rows.insertId;
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw new Error('ER_DUP_ENTRY');
+    }
+  }
+
+  async readUserByEmail(email: string): Promise<User | null> {
+    try {
+      const [rows]: any = await this.db.query(
+        `SELECT * FROM ${this.tableNameTalent} WHERE email = ?`,
+        [email],
+      );
+      if (rows.length === 0) {
+        return null;
+      }
+      return rows[0];
+    } catch (error) {
+      console.error('Error reading user by email:', error);
+      throw new Error('DATABASE_QUERY_ERROR');
+    }
+  }
+}
+
+export default new AuthRepository();

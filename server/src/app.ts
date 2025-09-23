@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import errorHandler from '../utils/errorHandler';
+import logger from '../utils/logger';
 import 'dotenv/config';
 
 // Enable CORS
@@ -21,7 +23,7 @@ app.use(express.json());
 import router from './routes/routes';
 app.use('/api', router);
 
-// Route test
+// Route de test
 app.get('/', (req, res) => {
   res.json({ message: '🚀 Yabara API is running!' });
 });
@@ -32,9 +34,13 @@ const logErrors: ErrorRequestHandler = (err, req, res, next) => {
   console.error(err);
   console.error('on req:', req.method, req.path);
 
+  logger.error(
+    `${err.status || 500} - ${err.message} - ${req.method} - ${req.originalUrl} - ${req.ip}`,
+  );
+
   next(err);
 };
 
-app.use(logErrors);
+app.use(logErrors, errorHandler);
 
 export default app;

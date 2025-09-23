@@ -1,0 +1,17 @@
+meta {
+  name: add
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3310/api/company-sectors
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "test"
+  }
+}

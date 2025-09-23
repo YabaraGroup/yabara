@@ -8,163 +8,234 @@ CREATE TABLE comingsoon (
 );
 
 -- ========================
+-- ROLE
+-- ========================
+CREATE TABLE role (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- ========================
 -- COMPANY SECTOR
 -- ========================
 CREATE TABLE company_sector (
-    id_sector INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- ========================
 -- COMPANY
 -- ========================
 CREATE TABLE company (
-    id_company INT AUTO_INCREMENT PRIMARY KEY,
-    siren_number VARCHAR(20) NOT NULL UNIQUE,
-    siret_number VARCHAR(20) NOT NULL UNIQUE,
-    headcount INT,
-    logo_url VARCHAR(255),
-    founded_year YEAR,
-    address VARCHAR(255),
-    website_url VARCHAR(255),
-    id_sector INT NOT NULL,
-    CONSTRAINT fk_company_sector FOREIGN KEY (id_sector) REFERENCES company_sector(id_sector)
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  siren_number VARCHAR(20) NOT NULL UNIQUE,
+  siret_number VARCHAR(20) NOT NULL UNIQUE,
+  headcount INT,
+  logo_url VARCHAR(255),
+  founded_year YEAR,
+  address VARCHAR(255),
+  website_url VARCHAR(255),
+  id_sector INT NOT NULL,
+  id_role INT NOT NULL,
+  CONSTRAINT fk_company_sector FOREIGN KEY (id_sector) REFERENCES company_sector(id),
+  CONSTRAINT fk_company_role FOREIGN KEY (id_role) REFERENCES role(id)
 );
 
 -- ========================
 -- COMPANY CONTACT
 -- ========================
 CREATE TABLE company_contact (
-    id_contact INT AUTO_INCREMENT PRIMARY KEY,
-    firstname VARCHAR(100) NOT NULL,
-    lastname VARCHAR(100) NOT NULL,
-    email VARCHAR(150) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    phone VARCHAR(20),
-    id_company INT NOT NULL,
-    CONSTRAINT fk_company_contact_company FOREIGN KEY (id_company) REFERENCES company(id_company)
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  firstname VARCHAR(100) NOT NULL,
+  lastname VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  phone VARCHAR(20),
+  id_company INT NOT NULL,
+  CONSTRAINT fk_company_contact_company FOREIGN KEY (id_company) REFERENCES company(id)
 );
 
 -- ========================
 -- JOB FAMILY
 -- ========================
 CREATE TABLE job_family (
-    id_job_family INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  id_sector INT NOT NULL,
+  CONSTRAINT fk_job_family_sector FOREIGN KEY (id_sector) REFERENCES company_sector(id)
 );
 
 -- ========================
 -- JOB OFFER
 -- ========================
 CREATE TABLE job_offer (
-    id_offer INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(150) NOT NULL,
-    description TEXT,
-    contract_type VARCHAR(50),
-    required_degree VARCHAR(100),
-    required_experience VARCHAR(100),
-    salary DECIMAL(10,2),
-    location VARCHAR(150),
-    deadline DATE,
-    reference_number VARCHAR(50) NOT NULL UNIQUE,
-    id_company INT NOT NULL,
-    id_job_family INT NOT NULL,
-    CONSTRAINT fk_job_offer_company FOREIGN KEY (id_company) REFERENCES company(id_company),
-    CONSTRAINT fk_job_offer_job_family FOREIGN KEY (id_job_family) REFERENCES job_family(id_job_family)
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(150) NOT NULL,
+  description TEXT,
+  contract_type VARCHAR(50),
+  required_degree VARCHAR(100),
+  required_experience VARCHAR(100),
+  salary DECIMAL(10,2),
+  location VARCHAR(150),
+  deadline DATE,
+  reference_number VARCHAR(50) NOT NULL UNIQUE,
+  id_company INT NOT NULL,
+  id_job_family INT NOT NULL,
+  CONSTRAINT fk_job_offer_company FOREIGN KEY (id_company) REFERENCES company(id),
+  CONSTRAINT fk_job_offer_job_family FOREIGN KEY (id_job_family) REFERENCES job_family(id)
 );
 
 -- ========================
 -- TALENT
 -- ========================
 CREATE TABLE talent (
-    id_talent INT AUTO_INCREMENT PRIMARY KEY,
-    firstname VARCHAR(100) NOT NULL,
-    lastname VARCHAR(100) NOT NULL,
-    email VARCHAR(150) NOT NULL UNIQUE,
-    phone VARCHAR(20),
-    education_level VARCHAR(100),
-    avatar_url VARCHAR(255),
-    referral_link VARCHAR(255),
-    id_job_family INT,
-    CONSTRAINT fk_talent_job_family FOREIGN KEY (id_job_family) REFERENCES job_family(id_job_family)
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  firstname VARCHAR(100) NOT NULL,
+  lastname VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  phone VARCHAR(20),
+  education_level VARCHAR(100),
+  avatar_url VARCHAR(255),
+  referral_link VARCHAR(255),
+  id_job_family INT,
+  id_role INT NOT NULL,
+  CONSTRAINT fk_talent_job_family FOREIGN KEY (id_job_family) REFERENCES job_family(id),
+  CONSTRAINT fk_talent_role FOREIGN KEY (id_role) REFERENCES role(id)
 );
 
 -- ========================
--- apply (applies)
+-- APPLY
 -- ========================
 CREATE TABLE apply (
-    id_talent INT NOT NULL,
-    id_offer INT NOT NULL,
-    apply_date DATE NOT NULL,
-    status VARCHAR(50),
-    PRIMARY KEY (id_talent, id_offer),
-    CONSTRAINT fk_apply_talent FOREIGN KEY (id_talent) REFERENCES talent(id_talent),
-    CONSTRAINT fk_apply_offer FOREIGN KEY (id_offer) REFERENCES job_offer(id_offer)
+  id_talent INT NOT NULL,
+  id_offer INT NOT NULL,
+  apply_date DATE NOT NULL,
+  status VARCHAR(50),
+  PRIMARY KEY (id_talent, id_offer),
+  CONSTRAINT fk_apply_talent FOREIGN KEY (id_talent) REFERENCES talent(id),
+  CONSTRAINT fk_apply_offer FOREIGN KEY (id_offer) REFERENCES job_offer(id)
 );
 
 -- ========================
 -- EXPERIENCE
 -- ========================
 CREATE TABLE experience (
-    id_experience INT AUTO_INCREMENT PRIMARY KEY,
-    company_name VARCHAR(150),
-    position VARCHAR(100),
-    start_date DATE,
-    end_date DATE,
-    description TEXT,
-    id_talent INT NOT NULL,
-    CONSTRAINT fk_experience_talent FOREIGN KEY (id_talent) REFERENCES talent(id_talent)
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  company_name VARCHAR(150),
+  position VARCHAR(100),
+  start_date DATE,
+  end_date DATE,
+  description TEXT,
+  id_talent INT NOT NULL,
+  CONSTRAINT fk_experience_talent FOREIGN KEY (id_talent) REFERENCES talent(id)
 );
 
 -- ========================
 -- EDUCATION
 -- ========================
 CREATE TABLE education (
-    id_education INT AUTO_INCREMENT PRIMARY KEY,
-    school_name VARCHAR(150),
-    degree VARCHAR(100),
-    start_date DATE,
-    end_date DATE,
-    description TEXT,
-    id_talent INT NOT NULL,
-    CONSTRAINT fk_education_talent FOREIGN KEY (id_talent) REFERENCES talent(id_talent)
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  school_name VARCHAR(150),
+  degree VARCHAR(100),
+  start_date DATE,
+  end_date DATE,
+  description TEXT,
+  id_talent INT NOT NULL,
+  CONSTRAINT fk_education_talent FOREIGN KEY (id_talent) REFERENCES talent(id)
 );
 
 -- ========================
 -- SKILL
 -- ========================
 CREATE TABLE skill (
-    id_skill INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- ========================
--- TALENT_SKILL (has_skill)
+-- TALENT_SKILL
 -- ========================
 CREATE TABLE talent_skill (
-    id_talent INT NOT NULL,
-    id_skill INT NOT NULL,
-    PRIMARY KEY (id_talent, id_skill),
-    CONSTRAINT fk_talent_skill_talent FOREIGN KEY (id_talent) REFERENCES talent(id_talent),
-    CONSTRAINT fk_talent_skill_skill FOREIGN KEY (id_skill) REFERENCES skill(id_skill)
+  id_talent INT NOT NULL,
+  id_skill INT NOT NULL,
+  PRIMARY KEY (id_talent, id_skill),
+  CONSTRAINT fk_talent_skill_talent FOREIGN KEY (id_talent) REFERENCES talent(id),
+  CONSTRAINT fk_talent_skill_skill FOREIGN KEY (id_skill) REFERENCES skill(id)
 );
 
 -- ========================
 -- LANGUAGE
 -- ========================
 CREATE TABLE language (
-    id_language INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- ========================
--- TALENT_LANGUAGE (speaks)
+-- TALENT_LANGUAGE
 -- ========================
 CREATE TABLE talent_language (
-    id_talent INT NOT NULL,
-    id_language INT NOT NULL,
-    proficiency_level VARCHAR(50),
-    PRIMARY KEY (id_talent, id_language),
-    CONSTRAINT fk_talent_language_talent FOREIGN KEY (id_talent) REFERENCES talent(id_talent),
-    CONSTRAINT fk_talent_language_language FOREIGN KEY (id_language) REFERENCES language(id_language)
+  id_talent INT NOT NULL,
+  id_language INT NOT NULL,
+  proficiency_level VARCHAR(50),
+  PRIMARY KEY (id_talent, id_language),
+  CONSTRAINT fk_talent_language_talent FOREIGN KEY (id_talent) REFERENCES talent(id),
+  CONSTRAINT fk_talent_language_language FOREIGN KEY (id_language) REFERENCES language(id)
 );
+
+-- ========================
+-- SEEDING
+-- ========================
+-- Company sectors
+INSERT INTO company_sector (name) VALUES
+('PÔLE 1 - TERTIAIRE (Services & Fonctions support)'),
+('PÔLE 2 - SECONDAIRE (Industrie, Construction & Production)'),
+('PÔLE 3 - NUMÉRIQUE & INNOVATION'),
+('PÔLE 4 - COMMERCIAL & RELATION CLIENT'),
+('PÔLE 5 - MÉTIERS PRATIQUES & ÉCONOMIE INFORMELLE');
+
+-- Job families
+INSERT INTO job_family (name, id_sector) VALUES
+-- Pôle 1
+('Administratif, Droit & Juridique', 1),
+('Finance, Comptabilité & Gestion', 1),
+('Ressources Humaines', 1),
+('Conseil aux Entreprises', 1),
+('Banque & Assurance', 1),
+('Enseignement & Éducation', 1),
+('Santé & Médical', 1),
+('Fonction Publique & Administration Territoriale', 1),
+('Travail Social & Développement Communautaire', 1),
+
+-- Pôle 2
+('Industrie & Énergie (Minière, Pétrolière, Gazière)', 2),
+('Bâtiment, Travaux Publics, Architecture & Construction', 2),
+('Logistique, Transport & Mobilité', 2),
+('Environnement, Sécurité & Qualité (HSE)', 2),
+('Agriculture & Agroalimentaire', 2),
+
+-- Pôle 3
+('Digital, Télécommunications & Métiers du Numérique', 3),
+('Informatique, IT & R&D', 3),
+('Audiovisuel, Médias & Communication Digitale', 3),
+('Jeux Vidéo, Animation & Design 3D', 3),
+
+-- Pôle 4
+('Marketing & Communication', 4),
+('Commerces & Ventes', 4),
+('Immobilier', 4),
+
+-- Pôle 5
+('Artisanat & Métiers Manuels (plomberie, couture, menuiserie, mécanique, etc.)', 5),
+('Sécurité & Gardiennage', 5),
+('Bien-être, Sport & Esthétique (coiffure, esthétique, fitness, spa, etc.)', 5),
+('Tourisme & Hôtellerie', 5),
+('Arts, Culture & Patrimoine', 5);
+
+-- Roles
+INSERT INTO role (name) VALUES
+('user'),
+('company'),
+('admin'),
+('superadmin');

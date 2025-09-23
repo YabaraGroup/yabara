@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import EmailRepository from '../models/EmailRepository';
+import EmailRepository from '../../models/EmailRepositoryRepository';
 
 const createEmail: RequestHandler = async (req, res, next) => {
   try {
