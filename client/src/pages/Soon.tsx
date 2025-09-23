@@ -3,20 +3,31 @@ import CardAvatar from '../components/CardAvatar';
 
 function Soon() {
   return (
-    <section className="background">
-      <CardAvatar />
+    <section className="container-soon background min-h-screen flex flex-col items-center overflow-x-hidden px-5 py-10">
+      <span className="mt-96 sm:mt-0">
+        <CardAvatar />
+      </span>
 
-      <div className="text-center text-7xl sm:text-9xl text-white px-5 py-2">
-        <p className="flex flex-col lg:flex-row justify-center items-center gap-4">
-          <span className="text-gold">Yabara</span>{' '}
-          <span className="text-5xl sm:text-9xl">arrive bientôt !</span>
+      {/* Titre principal */}
+      <div className="mt-8 text-center text-white">
+        <p className="flex flex-col xl:flex-row justify-center items-center gap-4">
+          <span className="text-gold text-6xl sm:text-7xl md:text-8xl lg:text-8xl xl:text-9xl title">
+            Yabara
+          </span>{' '}
+          <span className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl xl:text-9xl xl:whitespace-nowrap tracking-tight title">
+            arrive bientôt !
+          </span>
         </p>
-        <div className="font-extralight text-xl my-10 text-text-grey">
+
+        {/* Sous-titre */}
+        <div className="font-extralight text-base sm:text-lg md:text-xl my-10 text-text-grey max-w-3xl mx-auto">
           <p>Soyez parmi les premiers à rejoindre la plateforme qui transformera</p>
           <p>la façon de recruter et de trouver un emploi en Côte d’Ivoire.</p>
         </div>
       </div>
-      <div>
+
+      {/* Formulaire */}
+      <div className="w-full max-w-md space-y-4">
         <p className="text-white text-xl text-center font-light hidden sm:block">
           L'avenir du recrutement arrive bientôt
         </p>
