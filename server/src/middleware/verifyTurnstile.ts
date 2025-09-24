@@ -30,8 +30,6 @@ export async function verifyTurnstile(req: Request, res: Response, next: NextFun
     if (!data.success) {
       return res.status(403).json({ error: 'captcha_failed', details: data['error-codes'] ?? [] });
     }
-    // (Optionnel) renforcer: vérifier l'action/hostname attendus si tu les utilises côté widget
-    // if (data.action !== "email") return res.status(403).json({ error: "captcha_action_mismatch" });
 
     next();
   } catch (e) {

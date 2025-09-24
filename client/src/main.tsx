@@ -1,15 +1,19 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router';
+import { ToastContainer } from 'react-toastify';
 
 import './index.css';
 
 /** Import Pages */
-import App from './App.tsx';
-import NotFound from './pages/NotFound.tsx';
-import Layout from './pages/Layout.tsx';
-import Soon from './pages/Soon.tsx';
-
+import App from './App';
+import NotFound from './pages/NotFound';
+import Layout from './pages/Layout';
+import Soon from './pages/Soon';
+import ErrorPage from './pages/ErrorPage';
+import Login from './pages/Login';
+import { StepProvider } from './context/StepContext';
+import SignUpWizard from './pages/SignUpWizard';
 // Find the root element in the HTML document
 const rootElement = document.getElementById('root');
 if (rootElement == null) {
@@ -19,6 +23,7 @@ if (rootElement == null) {
 const router = createBrowserRouter([
   {
     path: '/app',
+    errorElement: <ErrorPage />,
     element: <Layout />,
     children: [
       {
@@ -26,19 +31,31 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: '*',
-        element: <NotFound />,
+        path: '/app/login',
+        element: <Login />,
+      },
+      {
+        path: '/app/signup',
+        element: <SignUpWizard />,
       },
     ],
   },
   {
     path: '/',
     element: <Soon />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);
 
 createRoot(rootElement).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <StepProvider>
+      <RouterProvider router={router} />
+    </StepProvider>
+    <ToastContainer />
   </StrictMode>,
 );

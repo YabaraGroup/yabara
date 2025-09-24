@@ -27,13 +27,13 @@ import { validateTalent } from '../middleware/validateTalent';
 import authMiddleware from '../middleware/authMiddleware';
 
 router.post(
-  '/create-account',
-  authMiddleware.hashPassword,
+  '/auth/signup/user',
   validateTalent,
+  authMiddleware.hashPassword,
   authController.createUser,
 );
 
-router.post('/create-company', authController.createCompany);
+router.post('/auth/signup/company', authController.createCompany);
 
 //------------------------------------------------------------------------------
 // Wall of Security

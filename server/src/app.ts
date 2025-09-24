@@ -14,6 +14,12 @@ const corsOptions = {
 
 const app = express();
 
+// use logger info
+app.use((req, res, next) => {
+  logger.info(`Request: ${req.method} ${req.url}`);
+  next();
+});
+
 app.use(cors(corsOptions));
 
 // Middleware pour parser JSON
