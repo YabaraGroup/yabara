@@ -193,7 +193,8 @@ INSERT INTO company_sector (name) VALUES
 ('PÔLE 2 - SECONDAIRE (Industrie, Construction & Production)'),
 ('PÔLE 3 - NUMÉRIQUE & INNOVATION'),
 ('PÔLE 4 - COMMERCIAL & RELATION CLIENT'),
-('PÔLE 5 - MÉTIERS PRATIQUES & ÉCONOMIE INFORMELLE');
+('PÔLE 5 - MÉTIERS PRATIQUES & ÉCONOMIE INFORMELLE'),
+('PÔLE 6 - MARKETING');
 
 -- Job families
 INSERT INTO job_family (name, id_sector) VALUES
@@ -231,7 +232,16 @@ INSERT INTO job_family (name, id_sector) VALUES
 ('Sécurité & Gardiennage', 5),
 ('Bien-être, Sport & Esthétique (coiffure, esthétique, fitness, spa, etc.)', 5),
 ('Tourisme & Hôtellerie', 5),
-('Arts, Culture & Patrimoine', 5);
+('Arts, Culture & Patrimoine', 5),
+
+-- Pôle 6
+('Communication & Publicité', 6),
+('Études de Marché & Analyse de Données', 6),
+('Relations Publiques & Événementiel', 6),
+('Digital Marketing & SEO', 6),
+('SEO & SEA', 6);
+
+
 
 -- Roles
 INSERT INTO role (name) VALUES

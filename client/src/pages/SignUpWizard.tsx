@@ -17,7 +17,7 @@ export default function SignUpWizard() {
             onClick={() => setAccountType('user')}
             className={`px-4 py-2 text-sm ${accountType === 'user' ? 'bg-gold text-white' : 'bg-white text-gold'}`}
           >
-            Particulier
+            Talent
           </button>
           <button
             type="button"

@@ -50,11 +50,11 @@ interface StepContextType {
 
 // ---- Valeurs initiales ----
 const initialUser: User = {
-  firstname: 'a',
-  lastname: 'a',
-  email: 'a@a.a',
-  password: 'Aaaaaa1!',
-  confirmPassword: 'Aaaaaa1!',
+  firstname: '',
+  lastname: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
 };
 
 const initialProfile: Profile = {
