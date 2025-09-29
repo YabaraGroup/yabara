@@ -32,8 +32,12 @@ COPY server/package.json server/package.json
 # Installe les deps prod du serveur
 RUN npm install --workspace=server --omit=dev --no-audit --no-fund
 
+# Install BDD
+CMD npm run db:migrate
+
 # Copie le build généré
 COPY --from=builder /app/server/dist ./dist
 
 EXPOSE 3310
+
 CMD ["node", "dist/server.js"]
