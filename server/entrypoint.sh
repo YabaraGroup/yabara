@@ -2,17 +2,17 @@
 set -e
 
 echo "⏳ Waiting for MySQL..."
-until nc -z -v -w30 "$DB_HOST" "$DB_PORT"
+until nc -z -v -w30 "$MYSQL_HOST" "$MYSQL_PORT"
 do
   echo "Waiting for database connection..."
   sleep 5
 done
 
 echo "🚀 Running migrations..."
-if [ "$NODE_ENV" = "production" ]; then
-  npm run db:migrate:prod --workspace=server
+if npm run db:migrate --workspace=server; then
+  echo "✅ Migrations done"
 else
-  npm run db:migrate:dev --workspace=server
+  echo "⚠️ Migration failed, but starting server anyway"
 fi
 
 echo "✅ Starting server..."
