@@ -18,7 +18,7 @@ if (rootElement == null) {
 
 const router = createBrowserRouter([
   {
-    path: '/app',
+    path: '/',
     element: <Layout />,
     children: [
       {
@@ -30,10 +30,6 @@ const router = createBrowserRouter([
         element: <NotFound />,
       },
     ],
-  },
-  {
-    path: '/',
-    element: <Soon />,
   },
 ]);
 
