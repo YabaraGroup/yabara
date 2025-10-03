@@ -48,6 +48,24 @@ interface StepContextType {
   handleSubmit: () => void;
 }
 
+function createIdentifier(phoneNumber: string, firstname: string, lastname: string): string {
+  /**
+   * Pour créer l'identifiant unique, je vais prendre
+   * - les deux dernieres lettre du prénom, ensuite
+   * - la deuxieme série du numéro de téléphone, ensuite
+   * - les deux premières lettres du nom de famille pour finir avec
+   * - la quatrième série du numéro de téléphone.
+   */
+
+  const cleanPhone = phoneNumber.replace(/\s+/g, ''); // enlève tous les espaces si présent
+
+  const idPart1 = firstname.slice(-2);
+  const idPart2 = cleanPhone.slice(2, 4);
+  const idPart3 = lastname.slice(0, 2);
+  const idPart4 = cleanPhone.slice(6, 8);
+  return idPart1 + idPart2 + idPart3 + idPart4;
+}
+
 // ---- Valeurs initiales ----
 const initialUser: User = {
   firstname: '',
@@ -102,17 +120,26 @@ export function StepProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      // création de l'idUnique
+      const idUnique = createIdentifier(
+        profile.phone ?? '',
+        user.firstname,
+        user.lastname,
+      ).toUpperCase();
       const cleanedUser = removeEmptyFields(user);
       const cleanedProfile = removeEmptyFields(profile);
 
       payload = {
         ...cleanedUser,
         ...cleanedProfile,
+        idUnique,
         id_job_family: profile.id_job_family ? +profile.id_job_family : undefined,
       };
     } else {
       payload = removeEmptyFields(company);
     }
+
+    console.log(payload);
 
     const signupPromise = api.post(`/api/auth/signup/${accountType}`, payload);
 

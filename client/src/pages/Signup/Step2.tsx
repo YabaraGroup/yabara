@@ -86,7 +86,13 @@ function Step2User({ jobFamilies }: { jobFamilies: { id: number; name: string }[
         </div>
       )}
 
-      <Field label="Téléphone" name="phone" value={profile.phone ?? ''} onChange={onChange} />
+      <Field
+        label="Téléphone"
+        name="phone"
+        value={profile.phone ?? ''}
+        onChange={onChange}
+        required
+      />
 
       <Field
         label="Niveau d'études"
