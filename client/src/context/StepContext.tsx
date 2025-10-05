@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import api from '../utils/fetch';
+import { api } from '../utils/fetch';
 import { toastPromise, errorToast } from '../utils/toast';
 
 // ---- Types ----

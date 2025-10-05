@@ -16,7 +16,7 @@ const optionArgon2 = {
 const isRegistered: RequestHandler = async (req, res, next) => {
   const user = await AuthRepository.readUserByEmail(req.body.email);
   if (!user) {
-    throw new Error('USER_NOT_FOUND');
+    return res.status(401).json({ message: 'Invalid email or password' });
   }
   req.user = { ...user, confirmPassword: req.body.confirmPassword };
   next();

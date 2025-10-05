@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import Modal from './Modal';
-import api from '../utils/fetch'; // ton instance axios
+import { api } from '../utils/fetch'; // ton instance axios
 
 declare global {
   interface Window {

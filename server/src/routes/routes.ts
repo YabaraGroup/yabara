@@ -36,6 +36,19 @@ router.post(
 router.post('/auth/signup/company', authMiddleware.hashPassword, authController.createCompany);
 
 //------------------------------------------------------------------------------
+// Auth - Login / Logout
+//------------------------------------------------------------------------------
+
+router.post(
+  '/auth/login',
+  authMiddleware.isRegistered,
+  authMiddleware.comparePassword,
+  authController.login,
+);
+// router.post('/auth/logout', authMiddleware.authenticateToken, authController.logout);
+// router.post('/auth/refresh-token', authController.refreshToken);
+
+//------------------------------------------------------------------------------
 // Wall of Security
 //------------------------------------------------------------------------------
 
