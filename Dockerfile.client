@@ -1,24 +1,23 @@
-# -------- Build --------
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-# Copie package.json global + lockfile
-COPY package.json package-lock.json ./
+# On déclare que l’on accepte des args (pas de valeur en dur)
+ARG VITE_TURNSTILE_SITE_KEY
+ARG VITE_API_URL
 
-# Copie les manifests des workspaces
+# Ces args deviennent des ENV accessibles à Vite au build
+ENV VITE_TURNSTILE_SITE_KEY=$VITE_TURNSTILE_SITE_KEY
+ENV VITE_API_URL=$VITE_API_URL
+
+COPY package.json package-lock.json ./
 COPY client/package.json client/package.json
 COPY server/package.json server/package.json
 
-# Installe uniquement les deps nécessaires au client
 RUN npm install --workspace=client --no-audit --no-fund
-
-# Copie le code du client
 COPY client/ client/
 
-# Build du client
 RUN npm run build --workspace=client
 
-# -------- Runtime --------
 FROM nginx:alpine
 COPY --from=builder /app/client/dist /usr/share/nginx/html
 EXPOSE 80

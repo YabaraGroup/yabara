@@ -4,9 +4,11 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
-    "build": "tsc",
+    "build": "tsc && cp -r database/*.sql dist/database/",
     "start": "node dist/server.js",
-    "db:migrate": "tsx ./bin/migrate"
+    "db:migrate:dev": "tsx bin/migrate.ts",
+    "db:migrate:prod": "node dist/bin/migrate.js",
+    "db:migrate": "if [ \"$NODE_ENV\" = \"production\" ]; then npm run db:migrate:prod; else npm run db:migrate:dev; fi"
   },
   "dependencies": {
     "argon2": "^0.44.0",
@@ -17,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.5",
     "winston": "^3.17.0",
+    "tsx": "^4.20.5",
     "zod": "^4.1.8"
   },
   "devDependencies": {
@@ -28,7 +31,6 @@
     "@types/node": "^24.4.0",
     "@types/winston": "^2.4.4",
     "ts-node-dev": "^2.0.0",
-    "tsx": "^4.20.5",
     "typescript": "^5.6.3"
   }
 }

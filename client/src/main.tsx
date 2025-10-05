@@ -22,8 +22,7 @@ if (rootElement == null) {
 
 const router = createBrowserRouter([
   {
-    path: '/app',
-    errorElement: <ErrorPage />,
+    path: '/',
     element: <Layout />,
     children: [
       {
@@ -39,15 +38,6 @@ const router = createBrowserRouter([
         element: <SignUpWizard />,
       },
     ],
-  },
-  {
-    path: '/',
-    element: <Soon />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '*',
-    element: <NotFound />,
   },
 ]);
 
