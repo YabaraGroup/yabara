@@ -33,7 +33,7 @@ router.post(
   authController.createUser,
 );
 
-router.post('/auth/signup/company', authController.createCompany);
+router.post('/auth/signup/company', authMiddleware.hashPassword, authController.createCompany);
 
 //------------------------------------------------------------------------------
 // Wall of Security

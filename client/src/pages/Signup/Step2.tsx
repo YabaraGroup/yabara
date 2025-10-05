@@ -6,14 +6,24 @@ import { avatarsMan, avatarsWoman } from '../../utils/imgAvatar';
 
 export default function Step2() {
   const [jobFamilies, setJobFamilies] = useState([]);
+  const [companySectors, setCompanySectors] = useState([]);
 
   useEffect(() => {
-    api.get('/api/job-families').then(res => {
-      setJobFamilies(res.data.jobFamilies);
-    });
+    let endpoints = ['/api/job-families', '/api/company-sectors'];
+
+    Promise.all(endpoints.map(endpoint => api.get(endpoint))).then(
+      ([jobFamiliesRes, companySectorsRes]) => {
+        setJobFamilies(jobFamiliesRes.data.jobFamilies);
+        setCompanySectors(companySectorsRes.data.companySectors);
+      },
+    );
   }, []);
   const { accountType } = useStep();
-  return accountType === 'user' ? <Step2User jobFamilies={jobFamilies} /> : <Step2Company />;
+  return accountType === 'user' ? (
+    <Step2User jobFamilies={jobFamilies} />
+  ) : (
+    <Step2Company companySectors={companySectors} />
+  );
 }
 
 /* ------- Étape 2 : USER ------- */
@@ -144,7 +154,7 @@ function Step2User({ jobFamilies }: { jobFamilies: { id: number; name: string }[
 }
 
 /* ------- Étape 2 : COMPANY ------- */
-function Step2Company() {
+function Step2Company({ companySectors }: { companySectors: { id: number; name: string }[] }) {
   const { company, setCompany, prevStep, handleSubmit } = useStep();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -159,21 +169,31 @@ function Step2Company() {
 
   return (
     <form onSubmit={onSubmit} className="max-w-md mx-auto space-y-4">
-      <Field label="Pôle d’activité" name="pole" value={company.pole} onChange={onChange} />
+      <Field label="Raison sociale" name="name" value={company.name} onChange={onChange} required />
       <Field
-        label="Famille de métier"
-        name="jobFamily"
-        value={company.jobFamily}
+        label="Pôle d’activité"
+        name="pole"
+        type="select"
+        options={companySectors.map((cs: any) => ({ value: cs.id, label: cs.name }))}
+        value={company.pole}
         onChange={onChange}
+        required
       />
-      <Field label="Numéro SIREN / SIRET" name="siret" value={company.siret} onChange={onChange} />
+
+      <Field
+        label="Numéro SIREN / SIRET"
+        name="siret"
+        value={company.siret}
+        onChange={onChange}
+        required
+      />
       <Field
         label="Année de création"
         name="creationYear"
-        value={company.creationYear}
+        value={company.creationYear ?? ''}
         onChange={onChange}
       />
-      <Field label="Adresse" name="address" value={company.address} onChange={onChange} />
+      <Field label="Adresse" name="address" value={company.address ?? ''} onChange={onChange} />
       <Field
         label="Site web / réseau"
         name="website"

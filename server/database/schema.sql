@@ -28,6 +28,7 @@ CREATE TABLE company_sector (
 -- ========================
 CREATE TABLE company (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
   siren_number VARCHAR(20) NOT NULL UNIQUE,
   siret_number VARCHAR(20) NOT NULL UNIQUE,
   headcount INT,

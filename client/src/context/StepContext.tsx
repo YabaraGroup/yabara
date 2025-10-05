@@ -20,11 +20,11 @@ interface Profile {
 }
 
 interface Company {
+  name: string;
   pole: string;
-  jobFamily: string;
   siret: string;
-  creationYear: string;
-  address: string;
+  creationYear?: string;
+  address?: string;
   website?: string;
 }
 
@@ -84,8 +84,8 @@ const initialProfile: Profile = {
 };
 
 const initialCompany: Company = {
+  name: '',
   pole: '',
-  jobFamily: '',
   siret: '',
   creationYear: '',
   address: '',
@@ -114,30 +114,30 @@ export function StepProvider({ children }: { children: React.ReactNode }) {
   const handleSubmit = async () => {
     let payload: any = {};
 
-    if (accountType === 'user') {
-      if (user.password !== user.confirmPassword) {
-        errorToast('❌ Les mots de passe ne correspondent pas.');
-        return;
-      }
-
-      // création de l'idUnique
-      const idUnique = createIdentifier(
-        profile.phone ?? '',
-        user.firstname,
-        user.lastname,
-      ).toUpperCase();
-      const cleanedUser = removeEmptyFields(user);
-      const cleanedProfile = removeEmptyFields(profile);
-
-      payload = {
-        ...cleanedUser,
-        ...cleanedProfile,
-        idUnique,
-        id_job_family: profile.id_job_family ? +profile.id_job_family : undefined,
-      };
-    } else {
-      payload = removeEmptyFields(company);
+    if (user.password !== user.confirmPassword) {
+      errorToast('❌ Les mots de passe ne correspondent pas.');
+      return;
     }
+
+    // création de l'idUnique
+    const idUnique = createIdentifier(
+      profile.phone ?? '',
+      user.firstname,
+      user.lastname,
+    ).toUpperCase();
+
+    // Nettoyage des objets pour enlever les champs vides
+    const cleanedUser = removeEmptyFields(user);
+    const cleanedProfile = removeEmptyFields(profile);
+    const cleanedCompany = removeEmptyFields(company);
+
+    payload = {
+      ...cleanedUser,
+      ...cleanedProfile,
+      ...cleanedCompany,
+      idUnique,
+      id_job_family: profile.id_job_family ? +profile.id_job_family : undefined,
+    };
 
     console.log(payload);
 

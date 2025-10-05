@@ -13,8 +13,15 @@ const createUser: RequestHandler = async (req, res, next) => {
 
 const createCompany: RequestHandler = async (req, res, next) => {
   try {
-    // Logic to create a company account goes here
-    return res.status(201).json({ ok: true, companyId: 'newlyCreatedCompanyId' });
+    const companyId = await AuthRepository.createCompany(req.body);
+
+    // create company contact
+    const companyContactId = await AuthRepository.createCompanyUser({
+      ...req.body,
+      id_company: companyId,
+    });
+
+    return res.status(201).json({ ok: true, companyId, companyContactId });
   } catch (error) {
     return next(error);
   }

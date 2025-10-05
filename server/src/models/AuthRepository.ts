@@ -4,6 +4,7 @@ import type { User } from '../types/UserInterface';
 class AuthRepository {
   private db = databaseClient;
   private tableNameTalent = 'talent';
+  private tableNameCompany = 'company';
 
   async createUser(userData: User): Promise<number> {
     try {
@@ -55,6 +56,47 @@ class AuthRepository {
     } catch (error) {
       console.error('Error reading user by email:', error);
       throw new Error('DATABASE_QUERY_ERROR');
+    }
+  }
+
+  async createCompany(companyData: any): Promise<number> {
+    try {
+      // Logic to insert company data into the database
+      const [rows]: any = await this.db.query(
+        `INSERT INTO ${this.tableNameCompany} (name, siren_number, siret_number, id_sector, id_role) VALUES (?, ?, ?, ?, ?)`,
+        [
+          companyData.name,
+          companyData.siret,
+          companyData.siret,
+          companyData.pole,
+          2, // id role for company
+        ],
+      );
+      return rows.insertId;
+    } catch (error) {
+      console.error('Error creating company:', error);
+      throw new Error('ER_DUP_ENTRY');
+    }
+  }
+
+  async createCompanyUser(userData: any): Promise<number> {
+    try {
+      // Logic to insert company user data into the database
+      const [rows]: any = await this.db.query(
+        `INSERT INTO ${this.tableNameCompany}_contact (firstname, lastname, email, password, phone, id_company) VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          userData.firstname,
+          userData.lastname,
+          userData.email,
+          userData.password,
+          userData.phone,
+          userData.id_company,
+        ],
+      );
+      return rows.insertId;
+    } catch (error) {
+      console.error('Error creating company user:', error);
+      throw new Error('ER_DUP_ENTRY');
     }
   }
 }
