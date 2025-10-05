@@ -4,6 +4,7 @@ export interface User {
   email: string;
   password: string;
   phone?: string;
+  idUnique: string;
   education_level?: string;
   avatar_url?: string;
   referral_link?: string;

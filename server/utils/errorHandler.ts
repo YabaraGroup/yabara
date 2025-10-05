@@ -28,6 +28,14 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     });
   }
 
+  // Cas erreur d'authentification
+  if (err.message === 'INVALID_CREDENTIALS') {
+    return res.status(401).json({
+      ok: false,
+      message: 'Identifiants invalides. Accès refusé. 🚫',
+    });
+  }
+
   // Erreur générique
   return res.status(500).json({
     ok: false,

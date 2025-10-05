@@ -14,6 +14,7 @@ class AuthRepository {
         email,
         password,
         phone,
+        idUnique,
         education_level,
         avatar_url,
         referral_link,
@@ -21,13 +22,14 @@ class AuthRepository {
       } = userData;
 
       const [rows]: any = await this.db.query(
-        `INSERT INTO ${this.tableNameTalent} (firstname, lastname, email, password, phone, education_level, avatar_url, referral_link, id_job_family, id_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO ${this.tableNameTalent} (firstname, lastname, email, password, phone, identification, education_level, avatar_url, referral_link, id_job_family, id_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           firstname,
           lastname,
           email,
           password,
           phone,
+          idUnique,
           education_level,
           avatar_url,
           referral_link,

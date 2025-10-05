@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import api from '../../utils/fetch';
+import { api } from '../../utils/fetch';
 import { useStep } from '../../context/StepContext';
 import Field from '../../components/Field';
 import { avatarsMan, avatarsWoman } from '../../utils/imgAvatar';

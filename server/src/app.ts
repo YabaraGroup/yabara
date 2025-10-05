@@ -1,18 +1,23 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import errorHandler from '../utils/errorHandler';
 import logger from '../utils/logger';
-import 'dotenv/config';
 
 // Enable CORS
 const corsOptions = {
-  origin: '*',
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   preflightContinue: false,
   optionsSuccessStatus: 204,
+  credentials: true,
 };
 
 const app = express();
+
+// Middleware pour parser les cookies
+app.use(cookieParser());
 
 // use logger info
 app.use((req, res, next) => {
