@@ -18,7 +18,7 @@ const isRegistered: RequestHandler = async (req, res, next) => {
   if (!user) {
     throw new Error('USER_NOT_FOUND');
   }
-  req.user = user;
+  req.user = { ...user, confirmPassword: req.body.confirmPassword };
   next();
 };
 
