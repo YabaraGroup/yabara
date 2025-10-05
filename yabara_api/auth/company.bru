@@ -1,0 +1,23 @@
+meta {
+  name: company
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3310/api/auth/signup/company
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "firstname": "anthony",
+    "lastname": "doe",
+    "email": "anthony@dose.com",
+    "password": "azerty.123",
+    "siren_number": "1246777",
+    "siret_number": "1246777",
+    "id_sector": 4
+  }
+}

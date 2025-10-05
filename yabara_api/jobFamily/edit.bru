@@ -1,0 +1,17 @@
+meta {
+  name: edit
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3310/api/job-families/27
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "test edit"
+  }
+}
