@@ -37,7 +37,7 @@ const login: RequestHandler = async (req, res, next) => {
     const token = jwtMiddleware.createToken(payload);
     res.cookie('access_token', token, {
       httpOnly: true, // ❗️Empêche l'accès depuis le JS du front
-      // secure: true, // ⚡️Seulement via HTTPS
+      secure: true, // ⚡️Seulement via HTTPS
       sameSite: 'strict', // 🚫 Empêche les requêtes cross-site
       maxAge: 1000 * 60 * 60, // (1h)
     });
