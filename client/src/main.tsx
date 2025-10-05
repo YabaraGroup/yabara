@@ -7,10 +7,7 @@ import './index.css';
 
 /** Import Pages */
 import App from './App';
-import NotFound from './pages/NotFound';
 import Layout from './pages/Layout';
-import Soon from './pages/Soon';
-import ErrorPage from './pages/ErrorPage';
 import Login from './pages/Login';
 import { StepProvider } from './context/StepContext';
 import SignUpWizard from './pages/SignUpWizard';

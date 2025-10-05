@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react';
 interface AuthContextType {
   isAuthenticated: boolean;
   user: any | null;
-  login: (email: string, password: string) => void;
+  // login: (email: string, password: string) => void;
   logout: () => void;
 }
 
@@ -14,7 +14,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const authValue: AuthContextType = {
     isAuthenticated: false,
     user: null,
-    login: (email: string, password: string) => {},
+    // login: (email: string, password: string) => {},
     logout: () => {},
   };
   return <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>;
