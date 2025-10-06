@@ -7,7 +7,7 @@
     "build": "tsc && cp -r database/*.sql dist/database/",
     "start": "node dist/server.js",
     "db:migrate:dev": "tsx bin/migrate.ts",
-    "db:migrate:prod": "npm run build && node dist/bin/migrate.js",
+    "db:migrate:prod": "node dist/bin/migrate.js",
     "db:migrate": "if [ \"$NODE_ENV\" = \"production\" ]; then npm run db:migrate:prod; else npm run db:migrate:dev; fi"
   },
   "dependencies": {
