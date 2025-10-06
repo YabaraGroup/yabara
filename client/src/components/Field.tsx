@@ -12,6 +12,7 @@ type FieldProps = {
   type?: 'text' | 'number' | 'select' | 'email' | 'password';
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  disabled?: boolean;
   options?: Option[];
   required?: boolean;
 };
@@ -21,6 +22,7 @@ export default function Field({
   name,
   type = 'text',
   value,
+  disabled = false,
   onChange,
   options = [],
   required = false,
@@ -59,6 +61,7 @@ export default function Field({
             name={name}
             type={inputType}
             value={value}
+            disabled={disabled}
             onChange={onChange}
             required={required}
             className="border rounded px-2 py-1 w-full pr-10" // espace pour l’icône

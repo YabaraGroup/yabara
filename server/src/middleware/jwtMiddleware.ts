@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import type { RequestHandler } from 'express';
+import jwt from 'jsonwebtoken';
 import AuthRepository from '../models/AuthRepository';
 
 // Interface pour le payload JWT

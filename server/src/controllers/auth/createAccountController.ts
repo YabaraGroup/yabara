@@ -42,7 +42,12 @@ const login: RequestHandler = async (req, res, next) => {
       maxAge: 1000 * 60 * 60, // (1h)
     });
 
-    return res.status(200).json({ ok: true, message: 'Login successful' });
+    // On ne renvoie pas le mot de passe
+    // Je clône l'objet user avec l'opérateur spread pour ne pas modifier l'original
+    const safeUser = { ...req.user };
+    delete safeUser.password;
+
+    return res.status(200).json({ ok: true, user: safeUser });
   } catch (error) {
     return next(error);
   }
@@ -50,8 +55,33 @@ const login: RequestHandler = async (req, res, next) => {
 
 const logout: RequestHandler = async (req, res, next) => {
   try {
+    res.clearCookie('access_token');
     // Implement logout logic if needed (e.g., invalidate token)
     return res.status(200).json({ ok: true, message: 'Logged out successfully' });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const checkSession: RequestHandler = async (req, res, next) => {
+  try {
+    if (req.user) {
+      return res
+        .status(200)
+        .json({ ok: true, user: { email: req.user.email, firstname: req.user.firstname } });
+    } else {
+      return res.status(200).json({ ok: false, message: 'No active session' });
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const updateUser: RequestHandler = async (req, res, next) => {
+  try {
+    const updatedUser = await AuthRepository.updateUser(req.body);
+
+    return res.status(200).json({ ok: true, user: updatedUser });
   } catch (error) {
     return next(error);
   }
@@ -70,4 +100,4 @@ const logout: RequestHandler = async (req, res, next) => {
 //   }
 // };
 
-export default { createUser, createCompany, login, logout };
+export default { createUser, createCompany, login, logout, checkSession, updateUser };

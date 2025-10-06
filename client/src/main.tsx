@@ -11,6 +11,9 @@ import Layout from './pages/Layout';
 import Login from './pages/Login';
 import { StepProvider } from './context/StepContext';
 import SignUpWizard from './pages/SignUpWizard';
+import Profile from './pages/Profile';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 // Find the root element in the HTML document
 const rootElement = document.getElementById('root');
 if (rootElement == null) {
@@ -27,12 +30,22 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: '/app/login',
+        path: '/login',
         element: <Login />,
       },
       {
-        path: '/app/signup',
+        path: '/signup',
         element: <SignUpWizard />,
+      },
+      {
+        path: '/app',
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: 'profile',
+            element: <Profile />,
+          },
+        ],
       },
     ],
   },
@@ -40,9 +53,11 @@ const router = createBrowserRouter([
 
 createRoot(rootElement).render(
   <StrictMode>
-    <StepProvider>
-      <RouterProvider router={router} />
-    </StepProvider>
-    <ToastContainer />
+    <AuthProvider>
+      <StepProvider>
+        <RouterProvider router={router} />
+      </StepProvider>
+      <ToastContainer />
+    </AuthProvider>
   </StrictMode>,
 );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../utils/fetch';
 import { useStep } from '../../context/StepContext';
 import Field from '../../components/Field';
@@ -28,6 +29,8 @@ export default function Step2() {
 
 /* ------- Étape 2 : USER ------- */
 function Step2User({ jobFamilies }: { jobFamilies: { id: number; name: string }[] }) {
+  const navigate = useNavigate();
+
   const { profile, setProfile, prevStep, handleSubmit } = useStep();
   const [gender, setGender] = useState<'woman' | 'man'>('woman'); // toggle
 
@@ -40,9 +43,10 @@ function Step2User({ jobFamilies }: { jobFamilies: { id: number; name: string }[
     setProfile(prev => ({ ...prev, avatar_url: url }));
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleSubmit();
+    const success = await handleSubmit();
+    if (success) navigate('/login');
   };
 
   return (
@@ -155,6 +159,8 @@ function Step2User({ jobFamilies }: { jobFamilies: { id: number; name: string }[
 
 /* ------- Étape 2 : COMPANY ------- */
 function Step2Company({ companySectors }: { companySectors: { id: number; name: string }[] }) {
+  const navigate = useNavigate();
+
   const { company, setCompany, prevStep, handleSubmit } = useStep();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -162,9 +168,10 @@ function Step2Company({ companySectors }: { companySectors: { id: number; name: 
     setCompany(prev => ({ ...prev, [name]: value }));
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleSubmit(); // envoie { ...company }
+    const success = await handleSubmit();
+    if (success) navigate('/login');
   };
 
   return (
