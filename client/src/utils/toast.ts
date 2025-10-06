@@ -9,7 +9,7 @@ const OPTIONS: ToastOptions = {
   pauseOnHover: true,
   draggable: true,
   progress: undefined,
-  theme: 'light',
+  theme: 'colored',
 };
 
 const successToast = (message: string) => {
@@ -18,6 +18,10 @@ const successToast = (message: string) => {
 
 const errorToast = (message: string) => {
   toast.error(message, OPTIONS);
+};
+
+const infoToast = (message: string) => {
+  toast.info(message, OPTIONS);
 };
 
 /**
@@ -60,4 +64,4 @@ const toastPromise = <T>(
   );
 };
 
-export { successToast, errorToast, toastPromise };
+export { successToast, errorToast, infoToast, toastPromise };

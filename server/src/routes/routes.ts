@@ -2,6 +2,10 @@ import { Router } from 'express';
 
 export const router = Router();
 
+//------------------------------------------------------------------------------
+// Email - Coming Soon
+//------------------------------------------------------------------------------
+
 // Endpoint pour s'inscrire à la liste d'attente
 import { createEmail } from '../controllers/email/emailController';
 import { emailLimiter } from '../../security/rateLimit';
@@ -38,6 +42,7 @@ router.post('/auth/signup/company', authMiddleware.hashPassword, authController.
 //------------------------------------------------------------------------------
 // Auth - Login / Logout
 //------------------------------------------------------------------------------
+import jwtMiddleware from '../middleware/jwtMiddleware';
 
 router.post(
   '/auth/login',
@@ -45,14 +50,6 @@ router.post(
   authMiddleware.comparePassword,
   authController.login,
 );
-// router.post('/auth/logout', authMiddleware.authenticateToken, authController.logout);
-// router.post('/auth/refresh-token', authController.refreshToken);
-
-//------------------------------------------------------------------------------
-// Wall of Security
-//------------------------------------------------------------------------------
-
-//!TODO: ajouter un middleware d'authentification
 
 //------------------------------------------------------------------------------
 // Job Family
@@ -77,5 +74,22 @@ router.get('/company-sectors/:id', companySectorController.readByCompanyId);
 router.post('/company-sectors', companySectorController.add);
 router.put('/company-sectors/:id', companySectorController.edit);
 router.delete('/company-sectors/:id', companySectorController.destroy);
+
+//------------------------------------------------------------------------------
+// Wall of Security
+//------------------------------------------------------------------------------
+
+router.use(jwtMiddleware.verifyToken);
+
+//------------------------------------------------------------------------------
+// Auth - Protected routes
+//------------------------------------------------------------------------------
+
+router.get('/auth/check', authController.checkSession);
+
+router.post('/auth/update-user', authController.updateUser);
+
+router.post('/auth/logout', authController.logout);
+// router.post('/auth/refresh-token', authController.refreshToken);
 
 export default router;

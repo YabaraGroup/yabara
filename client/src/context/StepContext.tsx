@@ -45,7 +45,7 @@ interface StepContextType {
   company: Company;
   setCompany: React.Dispatch<React.SetStateAction<Company>>;
 
-  handleSubmit: () => void;
+  handleSubmit: () => boolean | Promise<boolean>;
 }
 
 function createIdentifier(phoneNumber: string, firstname: string, lastname: string): string {
@@ -116,7 +116,7 @@ export function StepProvider({ children }: { children: React.ReactNode }) {
 
     if (user.password !== user.confirmPassword) {
       errorToast('❌ Les mots de passe ne correspondent pas.');
-      return;
+      return false;
     }
 
     // création de l'idUnique
@@ -139,8 +139,6 @@ export function StepProvider({ children }: { children: React.ReactNode }) {
       id_job_family: profile.id_job_family ? +profile.id_job_family : undefined,
     };
 
-    console.log(payload);
-
     const signupPromise = api.post(`/api/auth/signup/${accountType}`, payload);
 
     toastPromise(signupPromise, {
@@ -150,12 +148,14 @@ export function StepProvider({ children }: { children: React.ReactNode }) {
         err?.response?.data?.message || "❌ Une erreur est survenue lors de l'inscription.",
     });
 
-    signupPromise.then(() => {
-      setUser(initialUser);
-      setProfile(initialProfile);
-      setCompany(initialCompany);
-      setStep(1);
-    });
+    await signupPromise;
+    setUser(initialUser);
+    setProfile(initialProfile);
+    setCompany(initialCompany);
+    setStep(1);
+
+    // redirection vers la page de login
+    return true;
   };
 
   const value: StepContextType = {

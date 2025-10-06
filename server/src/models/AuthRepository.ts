@@ -101,6 +101,61 @@ class AuthRepository {
       throw new Error('ER_DUP_ENTRY');
     }
   }
+
+  async updateUser(userData: Partial<User>): Promise<User | null> {
+    try {
+      const allowedFields = [
+        'firstname',
+        'lastname',
+        'phone',
+        'education_level',
+        'avatar_url',
+        'referral_link',
+        'id_job_family',
+      ];
+
+      const updates: string[] = [];
+      const values: any[] = [];
+
+      for (const key of allowedFields) {
+        const value = userData[key as keyof User];
+        if (value !== undefined) {
+          updates.push(`${key} = ?`);
+          values.push(value);
+        }
+      }
+
+      if (updates.length === 0) {
+        console.warn('Aucun champ à mettre à jour');
+        return null;
+      }
+
+      // Ajoute l'ID à la fin pour le WHERE
+      values.push(userData.id);
+
+      const sql = `UPDATE ${this.tableNameTalent} SET ${updates.join(', ')} WHERE id = ?`;
+
+      const [result]: any = await this.db.query(sql, values);
+
+      if (result.affectedRows === 0) {
+        console.warn(`Aucun utilisateur trouvé avec l'id ${userData.id}`);
+        return null;
+      }
+
+      // 🔁 Récupère et renvoie le user mis à jour
+      const [updatedUser]: any = await this.db.query(
+        `SELECT id, firstname, lastname, email, phone, education_level, avatar_url, referral_link, id_job_family, identification 
+       FROM ${this.tableNameTalent} 
+       WHERE id = ?`,
+        [userData.id],
+      );
+
+      return updatedUser[0] || null;
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw new Error('DATABASE_UPDATE_ERROR');
+    }
+  }
 }
 
 export default new AuthRepository();
