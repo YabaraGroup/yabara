@@ -47,14 +47,28 @@ class AuthRepository {
 
   async readUserByEmail(email: string): Promise<User | null> {
     try {
-      const [rows]: any = await this.db.query(
-        `SELECT * FROM ${this.tableNameTalent} WHERE email = ?`,
+      // 1️⃣ On cherche dans les talents
+      const [talentRows]: any = await this.db.query(
+        `SELECT *, 'talent' AS account_type FROM talent WHERE email = ?`,
         [email],
       );
-      if (rows.length === 0) {
-        return null;
+
+      if (talentRows.length > 0) {
+        return talentRows[0];
       }
-      return rows[0];
+
+      // 2️⃣ Sinon, on cherche dans les company_contacts
+      const [companyRows]: any = await this.db.query(
+        `SELECT *, 'company' AS account_type FROM company_contact WHERE email = ?`,
+        [email],
+      );
+
+      if (companyRows.length > 0) {
+        return companyRows[0];
+      }
+
+      // 3️⃣ Aucun trouvé
+      return null;
     } catch (error) {
       console.error('Error reading user by email:', error);
       throw new Error('DATABASE_QUERY_ERROR');

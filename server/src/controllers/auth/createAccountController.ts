@@ -65,10 +65,13 @@ const logout: RequestHandler = async (req, res, next) => {
 
 const checkSession: RequestHandler = async (req, res, next) => {
   try {
+    // Je clône l'objet user avec l'opérateur spread pour ne pas modifier l'original
+    const safeUser = { ...req.user };
     if (req.user) {
-      return res
-        .status(200)
-        .json({ ok: true, user: { email: req.user.email, firstname: req.user.firstname } });
+      // On ne renvoie pas le mot de passe
+      delete safeUser.password;
+
+      return res.status(200).json({ ok: true, user: safeUser });
     } else {
       return res.status(200).json({ ok: false, message: 'No active session' });
     }

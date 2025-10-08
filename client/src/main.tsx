@@ -11,9 +11,11 @@ import Layout from './pages/Layout';
 import Login from './pages/Login';
 import { StepProvider } from './context/StepContext';
 import SignUpWizard from './pages/SignUpWizard';
-import Profile from './pages/Profile';
+import Profile from './pages/Profile/Profile';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProfileCompany from './pages/Profile/ProfileCompany';
+import Dashboard from './pages/Dashboard';
 // Find the root element in the HTML document
 const rootElement = document.getElementById('root');
 if (rootElement == null) {
@@ -42,8 +44,16 @@ const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           {
-            path: 'profile',
+            path: 'profile/company',
+            element: <ProfileCompany />,
+          },
+          {
+            path: 'profile/talent',
             element: <Profile />,
+          },
+          {
+            path: 'dashboard/:id_company',
+            element: <Dashboard />,
           },
         ],
       },

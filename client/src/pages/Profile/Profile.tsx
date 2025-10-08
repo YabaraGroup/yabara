@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import Field from '../components/Field';
-import { authApi } from '../utils/fetch';
-import { successToast } from '../utils/toast';
+import { useAuth } from '../../context/AuthContext';
+import Field from '../../components/Field';
+import { authApi } from '../../utils/fetch';
+import { errorToast, successToast } from '../../utils/toast';
 
 export default function Profile() {
   const { user, login } = useAuth();
   const [formData, setFormData] = useState(user);
 
-  // 🧠 On s’assure de bien synchroniser quand user est dispo
+  // On s’assure de bien synchroniser quand user est dispo
   useEffect(() => {
     if (user) setFormData(user);
   }, [user]);
@@ -26,7 +26,7 @@ export default function Profile() {
         login(res.data.user); // Met à jour le contexte Auth
         successToast('Profil mis à jour avec succès !');
       } else {
-        // Gérer les erreurs si nécessaire
+        errorToast('Une erreur est survenue. Veuillez réessayer plus tard.');
       }
     });
   };
