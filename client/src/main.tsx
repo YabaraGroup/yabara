@@ -7,13 +7,21 @@ import './index.css';
 
 /** Import Pages */
 import App from './App';
-import Layout from './pages/Layout';
-import Login from './pages/Login';
-import { StepProvider } from './context/StepContext';
 import SignUpWizard from './pages/SignUpWizard';
-import Profile from './pages/Profile';
+import { StepProvider } from './context/StepContext';
+import Login from './pages/Login';
 import { AuthProvider } from './context/AuthContext';
+
+/** TALENT */
+import Layout from './pages/Talent/Layout';
+import Profile from './pages/Talent/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+
+/** COMPANY */
+import LayoutCompany from './pages/Company/Layout';
+import ProfileCompany from './pages/Company/Profile';
+import Dashboard from './pages/Company/Dashboard';
+
 // Find the root element in the HTML document
 const rootElement = document.getElementById('root');
 if (rootElement == null) {
@@ -30,24 +38,38 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: '/login',
-        element: <Login />,
-      },
-      {
-        path: '/signup',
-        element: <SignUpWizard />,
-      },
-      {
         path: '/app',
         element: <ProtectedRoute />,
         children: [
           {
-            path: 'profile',
+            path: 'profile/talent',
             element: <Profile />,
           },
         ],
       },
     ],
+  },
+  {
+    path: '/app/company',
+    element: <LayoutCompany />,
+    children: [
+      {
+        path: 'profile',
+        element: <ProfileCompany />,
+      },
+      {
+        path: 'dashboard/:id_company',
+        element: <Dashboard />,
+      },
+    ],
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '/signup',
+    element: <SignUpWizard />,
   },
 ]);
 

@@ -9,7 +9,7 @@ const navigation = [
   { name: 'Fourth Link', href: '/' },
 ];
 function Navbar() {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
 
   return (
     <header className="text-white body-font">
@@ -40,8 +40,16 @@ function Navbar() {
             </>
           ) : (
             <>
+              {user?.account_type === 'company' && (
+                <Link
+                  to={`/app/company/dashboard/${user.id_company}`}
+                  className="inline-flex items-center py-1 px-3 mr-1 text-base mt-4 md:mt-0"
+                >
+                  Dashboard
+                </Link>
+              )}
               <Link
-                to="/app/profile"
+                to={`/app/profile/${user?.account_type === 'company' ? 'company' : 'talent'}`}
                 className="inline-flex items-center py-1 px-3 mr-1 text-base mt-4 md:mt-0"
               >
                 Mon profil

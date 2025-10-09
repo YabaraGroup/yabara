@@ -26,7 +26,7 @@ router.post(
 // Auth - Create Account
 //------------------------------------------------------------------------------
 
-import authController from '../controllers/auth/createAccountController';
+import authController from '../controllers/auth/accountController';
 import { validateTalent } from '../middleware/validateTalent';
 import authMiddleware from '../middleware/authMiddleware';
 
@@ -88,6 +88,7 @@ router.use(jwtMiddleware.verifyToken);
 router.get('/auth/check', authController.checkSession);
 
 router.post('/auth/update-user', authController.updateUser);
+router.post('/auth/update-company-contact', authController.updateCompanyContact);
 
 router.post('/auth/logout', authController.logout);
 // router.post('/auth/refresh-token', authController.refreshToken);

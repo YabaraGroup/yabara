@@ -47,14 +47,28 @@ class AuthRepository {
 
   async readUserByEmail(email: string): Promise<User | null> {
     try {
-      const [rows]: any = await this.db.query(
-        `SELECT * FROM ${this.tableNameTalent} WHERE email = ?`,
+      // 1️⃣ On cherche dans les talents
+      const [talentRows]: any = await this.db.query(
+        `SELECT *, 'talent' AS account_type FROM talent WHERE email = ?`,
         [email],
       );
-      if (rows.length === 0) {
-        return null;
+
+      if (talentRows.length > 0) {
+        return talentRows[0];
       }
-      return rows[0];
+
+      // 2️⃣ Sinon, on cherche dans les company_contacts
+      const [companyRows]: any = await this.db.query(
+        `SELECT *, 'company' AS account_type FROM company_contact WHERE email = ?`,
+        [email],
+      );
+
+      if (companyRows.length > 0) {
+        return companyRows[0];
+      }
+
+      // 3️⃣ Aucun trouvé
+      return null;
     } catch (error) {
       console.error('Error reading user by email:', error);
       throw new Error('DATABASE_QUERY_ERROR');
@@ -153,6 +167,52 @@ class AuthRepository {
       return updatedUser[0] || null;
     } catch (error) {
       console.error('Error updating user:', error);
+      throw new Error('DATABASE_UPDATE_ERROR');
+    }
+  }
+
+  async updateCompanyContact(contactData: any): Promise<any> {
+    try {
+      const allowedFields = ['firstname', 'lastname'];
+      const updates: string[] = [];
+      const values: any[] = [];
+
+      for (const key of allowedFields) {
+        const value = contactData[key];
+        if (value !== undefined) {
+          updates.push(`${key} = ?`);
+          values.push(value);
+        }
+      }
+
+      if (updates.length === 0) {
+        console.warn('Aucun champ à mettre à jour pour le contact');
+        return null;
+      }
+
+      // Ajoute l'ID à la fin pour le WHERE
+      values.push(contactData.id);
+
+      const sql = `UPDATE company_contact SET ${updates.join(', ')} WHERE id = ?`;
+
+      const [result]: any = await this.db.query(sql, values);
+
+      if (result.affectedRows === 0) {
+        console.warn(`Aucun contact trouvé avec l'id ${contactData.id}`);
+        return null;
+      }
+
+      // 🔁 Récupère et renvoie le contact mis à jour
+      const [updatedContact]: any = await this.db.query(
+        `SELECT id, firstname, lastname, email, phone, id_company 
+       FROM company_contact 
+       WHERE id = ?`,
+        [contactData.id],
+      );
+
+      return updatedContact[0] || null;
+    } catch (error) {
+      console.error('Error updating company contact:', error);
       throw new Error('DATABASE_UPDATE_ERROR');
     }
   }

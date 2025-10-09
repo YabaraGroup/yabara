@@ -2,6 +2,14 @@ import type { RequestHandler } from 'express';
 import AuthRepository from '../../models/AuthRepository';
 import jwtMiddleware from '../../middleware/jwtMiddleware';
 
+/**
+ * Create a new user account
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<unknown>}
+ */
 const createUser: RequestHandler = async (req, res, next) => {
   try {
     await AuthRepository.createUser(req.body);
@@ -12,6 +20,14 @@ const createUser: RequestHandler = async (req, res, next) => {
   }
 };
 
+/**
+ * Create a new company account
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<unknown>}
+ */
 const createCompany: RequestHandler = async (req, res, next) => {
   try {
     const companyId = await AuthRepository.createCompany(req.body);
@@ -28,6 +44,14 @@ const createCompany: RequestHandler = async (req, res, next) => {
   }
 };
 
+/**
+ * Login a user
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<unknown>}
+ */
 const login: RequestHandler = async (req, res, next) => {
   try {
     const payload = {
@@ -53,6 +77,14 @@ const login: RequestHandler = async (req, res, next) => {
   }
 };
 
+/**
+ * Logout a user
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns
+ */
 const logout: RequestHandler = async (req, res, next) => {
   try {
     res.clearCookie('access_token');
@@ -63,12 +95,23 @@ const logout: RequestHandler = async (req, res, next) => {
   }
 };
 
+/**
+ * Check if a user session is active
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<unknown>}
+ */
 const checkSession: RequestHandler = async (req, res, next) => {
   try {
+    // Je clône l'objet user avec l'opérateur spread pour ne pas modifier l'original
+    const safeUser = { ...req.user };
     if (req.user) {
-      return res
-        .status(200)
-        .json({ ok: true, user: { email: req.user.email, firstname: req.user.firstname } });
+      // On ne renvoie pas le mot de passe
+      delete safeUser.password;
+
+      return res.status(200).json({ ok: true, user: safeUser });
     } else {
       return res.status(200).json({ ok: false, message: 'No active session' });
     }
@@ -76,6 +119,15 @@ const checkSession: RequestHandler = async (req, res, next) => {
     return next(error);
   }
 };
+
+/**
+ * Update a user account
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<unknown>}
+ */
 
 const updateUser: RequestHandler = async (req, res, next) => {
   try {
@@ -100,4 +152,30 @@ const updateUser: RequestHandler = async (req, res, next) => {
 //   }
 // };
 
-export default { createUser, createCompany, login, logout, checkSession, updateUser };
+/**
+ * Update a company contact
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<unknown>}
+ */
+const updateCompanyContact: RequestHandler = async (req, res, next) => {
+  try {
+    const updatedContact = await AuthRepository.updateCompanyContact(req.body);
+
+    return res.status(200).json({ ok: true, user: { ...updatedContact, account_type: 'company' } });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export default {
+  createUser,
+  createCompany,
+  login,
+  logout,
+  checkSession,
+  updateUser,
+  updateCompanyContact,
+};
