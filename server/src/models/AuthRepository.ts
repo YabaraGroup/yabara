@@ -170,6 +170,52 @@ class AuthRepository {
       throw new Error('DATABASE_UPDATE_ERROR');
     }
   }
+
+  async updateCompanyContact(contactData: any): Promise<any> {
+    try {
+      const allowedFields = ['firstname', 'lastname'];
+      const updates: string[] = [];
+      const values: any[] = [];
+
+      for (const key of allowedFields) {
+        const value = contactData[key];
+        if (value !== undefined) {
+          updates.push(`${key} = ?`);
+          values.push(value);
+        }
+      }
+
+      if (updates.length === 0) {
+        console.warn('Aucun champ à mettre à jour pour le contact');
+        return null;
+      }
+
+      // Ajoute l'ID à la fin pour le WHERE
+      values.push(contactData.id);
+
+      const sql = `UPDATE company_contact SET ${updates.join(', ')} WHERE id = ?`;
+
+      const [result]: any = await this.db.query(sql, values);
+
+      if (result.affectedRows === 0) {
+        console.warn(`Aucun contact trouvé avec l'id ${contactData.id}`);
+        return null;
+      }
+
+      // 🔁 Récupère et renvoie le contact mis à jour
+      const [updatedContact]: any = await this.db.query(
+        `SELECT id, firstname, lastname, email, phone, id_company 
+       FROM company_contact 
+       WHERE id = ?`,
+        [contactData.id],
+      );
+
+      return updatedContact[0] || null;
+    } catch (error) {
+      console.error('Error updating company contact:', error);
+      throw new Error('DATABASE_UPDATE_ERROR');
+    }
+  }
 }
 
 export default new AuthRepository();

@@ -42,7 +42,7 @@ function Navbar() {
             <>
               {user?.account_type === 'company' && (
                 <Link
-                  to={`/app/dashboard/${user.id_company}`}
+                  to={`/app/company/dashboard/${user.id_company}`}
                   className="inline-flex items-center py-1 px-3 mr-1 text-base mt-4 md:mt-0"
                 >
                   Dashboard

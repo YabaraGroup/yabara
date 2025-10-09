@@ -3,9 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import Field from '../../components/Field';
 import { authApi } from '../../utils/fetch';
 import { errorToast, successToast } from '../../utils/toast';
-import { Link } from 'react-router-dom';
 
-export default function ProfileCompanyContact() {
+export default function Profile() {
   const { user, login } = useAuth();
   const [formData, setFormData] = useState(user);
 
@@ -64,21 +63,17 @@ export default function ProfileCompanyContact() {
           onChange={handleChange}
           required
         />
-        <Field
-          label="Email"
-          name="email"
-          type="email"
-          disabled
-          value={formData.email || ''}
-          onChange={handleChange}
-          required
-        />
-        <Field
-          label="Téléphone"
-          name="phone"
-          value={formData.phone || ''}
-          onChange={handleChange}
-        />
+        <div className="md:col-span-2">
+          <Field
+            label="Email"
+            name="email"
+            type="email"
+            disabled
+            value={formData.email || ''}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
         <div className="md:col-span-2 flex justify-end mt-4">
           <button

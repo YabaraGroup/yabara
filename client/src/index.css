@@ -1,5 +1,11 @@
 @import 'tailwindcss';
 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 @font-face {
   font-family: 'Inter';
   src:
@@ -25,6 +31,7 @@
   --color-dark-gold: #c79c34;
   --color-text-grey: #9ec3d9;
   --color-dark-blue: #314466;
+  --color-light-blue: #f3f8fc;
 }
 
 * {

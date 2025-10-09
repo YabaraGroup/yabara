@@ -34,7 +34,7 @@ export default function Field({
 
   return (
     <div className="mb-4 relative">
-      <label htmlFor={name} className="block mb-1 font-medium">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
 
@@ -61,16 +61,17 @@ export default function Field({
             name={name}
             type={inputType}
             value={value}
+            placeholder={label}
             disabled={disabled}
             onChange={onChange}
             required={required}
-            className="border rounded px-2 py-1 w-full pr-10" // espace pour l’icône
+            className="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black focus:outline-none pr-10"
           />
           {isPassword && (
             <button
               type="button"
               onClick={() => setShowPassword(prev => !prev)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-white hover:text-dark-gold"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-dark-gold"
             >
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
