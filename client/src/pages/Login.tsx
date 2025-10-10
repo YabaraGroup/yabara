@@ -10,7 +10,6 @@ import Field from '../components/Field';
 interface User {
   email: string;
   password: string;
-  id_company?: string;
 }
 
 function Login() {
@@ -31,7 +30,7 @@ function Login() {
       .then(data => {
         successToast(`Welcome back, ${data.data.user.firstname}!`);
         login(data.data.user);
-        nav(`/app/company/dashboard/${user.id_company}`);
+        nav(`/app/company/dashboard/${data.data.user.id_company}`);
       })
       .catch(error => {
         errorToast(error.response?.data?.message || 'Login failed');

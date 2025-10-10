@@ -45,7 +45,7 @@ export default function Field({
           value={value}
           onChange={onChange}
           required={required}
-          className="border rounded px-2 py-1 w-full"
+          className="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black focus:outline-none pr-10"
         >
           <option value="">-- Choisir --</option>
           {options.map(opt => (
