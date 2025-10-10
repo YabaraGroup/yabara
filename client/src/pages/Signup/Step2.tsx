@@ -4,6 +4,7 @@ import { api } from '../../utils/fetch';
 import { useStep } from '../../context/StepContext';
 import Field from '../../components/Field';
 import { avatarsMan, avatarsWoman } from '../../utils/imgAvatar';
+import AvatarCarousel from '../../components/AvatarCarousel';
 
 export default function Step2() {
   const [jobFamilies, setJobFamilies] = useState([]);
@@ -74,39 +75,26 @@ function Step2User({ jobFamilies }: { jobFamilies: { id: number; name: string }[
       </div>
 
       {/* Sélecteur d’avatars */}
-      <div className="grid grid-cols-5 gap-2">
-        {(gender === 'woman' ? avatarsWoman : avatarsMan).map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt={`avatar ${gender} ${i + 1}`}
-            onClick={() => handleSelectAvatar(src)}
-            className={`cursor-pointer rounded border-2 ${
-              profile.avatar_url === src ? 'border-gold' : 'border-transparent'
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Aperçu de l’avatar choisi */}
-      {profile.avatar_url && (
-        <div className="flex items-center gap-2">
-          <span className="block mb-1 font-medium">Avatar sélectionné :</span>
-          <img
-            src={profile.avatar_url}
-            alt="Avatar sélectionné"
-            className="w-32 h-32 rounded border border-gray-300"
-          />
-        </div>
-      )}
-
-      <Field
-        label="Téléphone"
-        name="phone"
-        value={profile.phone ?? ''}
-        onChange={onChange}
-        required
+      <AvatarCarousel
+        avatars={gender === 'woman' ? avatarsWoman : avatarsMan}
+        handleSelectAvatar={handleSelectAvatar}
       />
+
+      <div className="flex justify-between gap-4">
+        <Field
+          label="Téléphone"
+          name="phone"
+          value={profile.phone ?? ''}
+          onChange={onChange}
+          required
+        />
+        <Field
+          label="Parrainage"
+          name="referral"
+          value={profile.referral ?? ''}
+          onChange={onChange}
+        />
+      </div>
 
       <Field
         label="Niveau d'études"
@@ -131,13 +119,6 @@ function Step2User({ jobFamilies }: { jobFamilies: { id: number; name: string }[
         type="select"
         options={jobFamilies.map((jf: any) => ({ value: jf.id, label: jf.name }))}
         required
-        onChange={onChange}
-      />
-
-      <Field
-        label="Parrainage"
-        name="referral"
-        value={profile.referral ?? ''}
         onChange={onChange}
       />
 
@@ -176,7 +157,21 @@ function Step2Company({ companySectors }: { companySectors: { id: number; name: 
 
   return (
     <form onSubmit={onSubmit} className="max-w-md mx-auto space-y-4">
-      <Field label="Raison sociale" name="name" value={company.name} onChange={onChange} required />
+      <div className="flex justify-between gap-4">
+        <Field
+          label="Nom de la société"
+          name="name"
+          value={company.name}
+          onChange={onChange}
+          required
+        />
+        <Field
+          label="Année de création"
+          name="creationYear"
+          value={company.creationYear ?? ''}
+          onChange={onChange}
+        />
+      </div>
       <Field
         label="Pôle d’activité"
         name="pole"
@@ -194,12 +189,7 @@ function Step2Company({ companySectors }: { companySectors: { id: number; name: 
         onChange={onChange}
         required
       />
-      <Field
-        label="Année de création"
-        name="creationYear"
-        value={company.creationYear ?? ''}
-        onChange={onChange}
-      />
+
       <Field label="Adresse" name="address" value={company.address ?? ''} onChange={onChange} />
       <Field
         label="Site web / réseau"

@@ -44,8 +44,16 @@ export default function Step1() {
 
   return (
     <form className="max-w-md mx-auto space-y-4" onSubmit={onSubmit}>
-      <Field label="Prénom" name="firstname" value={user.firstname} onChange={onChange} required />
-      <Field label="Nom" name="lastname" value={user.lastname} onChange={onChange} required />
+      <div className="flex justify-between gap-4">
+        <Field
+          label="Prénom"
+          name="firstname"
+          value={user.firstname}
+          onChange={onChange}
+          required
+        />
+        <Field label="Nom" name="lastname" value={user.lastname} onChange={onChange} required />
+      </div>
       <Field
         label="Email"
         name="email"
