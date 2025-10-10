@@ -21,6 +21,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LayoutCompany from './pages/Company/Layout';
 import ProfileCompany from './pages/Company/Profile';
 import Dashboard from './pages/Company/Dashboard';
+import NotFound from './pages/NotFound';
 
 // Find the root element in the HTML document
 const rootElement = document.getElementById('root');
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
   {
     path: '/signup',
     element: <SignUpWizard />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);
 

@@ -30,7 +30,22 @@ function Login() {
       .then(data => {
         successToast(`Welcome back, ${data.data.user.firstname}!`);
         login(data.data.user);
-        nav(`/app/company/dashboard/${data.data.user.id_company}`);
+
+        switch (data.data.user.account_type) {
+          case 'talent':
+            nav(`/app/profile/talent`);
+            break;
+          case 'admin':
+            nav('/app/admin/dashboard');
+            break;
+          case 'company':
+            nav(`/app/company/dashboard/${data.data.user.id_company}`);
+            break;
+
+          default:
+            nav(`/app/`);
+            break;
+        }
       })
       .catch(error => {
         errorToast(error.response?.data?.message || 'Login failed');
