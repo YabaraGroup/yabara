@@ -25,10 +25,16 @@ function Navbar() {
           {!isAuthenticated ? (
             <>
               <Link
-                to="/signup"
+                to="/signup/company"
                 className="inline-flex items-center py-1 px-3 mr-1 text-base mt-4 md:mt-0"
               >
-                S'inscrire
+                S'inscrire en tant qu'entreprise
+              </Link>
+              <Link
+                to="/signup/talent"
+                className="inline-flex items-center py-1 px-3 mr-1 text-base mt-4 md:mt-0"
+              >
+                S'inscrire en tant que talent
               </Link>
               <Link
                 to="/login"

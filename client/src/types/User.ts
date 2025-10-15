@@ -5,5 +5,6 @@ export interface User {
   email: string;
   role: string;
   avatar_url?: string;
-  // ajoute d'autres champs selon ton modèle
+  account_type: 'talent' | 'company' | 'admin';
+  id_company?: number;
 }

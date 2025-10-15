@@ -1,90 +1,105 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider, createBrowserRouter } from 'react-router';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import './index.css';
 
-/** Import Pages */
-import App from './App';
-import SignUpWizard from './pages/SignUpWizard';
-import { StepProvider } from './context/StepContext';
-import Login from './pages/Login';
+/* ------------------- CONTEXTS ------------------- */
 import { AuthProvider } from './context/AuthContext';
+import { StepProvider } from './context/StepContext';
 
-/** TALENT */
-import Layout from './pages/Talent/Layout';
-import Profile from './pages/Talent/Profile';
+/* ------------------- PAGES GLOBALES ------------------- */
+import App from './App';
+import Login from './pages/Login';
+import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 
-/** COMPANY */
+/* ------------------- TALENT ------------------- */
+import LayoutTalent from './pages/Talent/Layout';
+import ProfileTalent from './pages/Talent/Profile';
+
+/* ------------------- COMPANY ------------------- */
 import LayoutCompany from './pages/Company/Layout';
 import ProfileCompany from './pages/Company/Profile';
 import Dashboard from './pages/Company/Dashboard';
-import NotFound from './pages/NotFound';
 
-// Find the root element in the HTML document
-const rootElement = document.getElementById('root');
-if (rootElement == null) {
-  throw new Error(`Your HTML Document should contain a <div id="root"></div>`);
-}
+/* ------------------- SIGNUP ------------------- */
+import SignUpCommon from './pages/Signup/SignUpCommon';
+import { CompanyLayout, TalentLayout } from './pages/Signup';
 
+/* ------------------- ROUTER CONFIG ------------------- */
 const router = createBrowserRouter([
+  /* --------- HOME / PUBLIC --------- */
   {
     path: '/',
-    element: <Layout />,
+    element: <LayoutTalent />, // Layout par défaut (visiteur ou talent)
+    children: [{ index: true, element: <App /> }],
+  },
+
+  /* --------- LOGIN --------- */
+  { path: '/login', element: <Login /> },
+
+  /* --------- SIGNUP (ÉTAPE COMMUNE) --------- */
+  {
+    path: '/signup',
+    children: [
+      // Étape 1 : commune
+      { path: 'company', element: <SignUpCommon /> },
+      { path: 'talent', element: <SignUpCommon /> },
+
+      // Étapes suivantes du flow d’inscription
+      {
+        path: 'company-flow',
+        element: <CompanyLayout />,
+      },
+      { path: 'talent-flow', element: <TalentLayout /> },
+    ],
+  },
+
+  /* --------- ESPACE TALENT --------- */
+  {
+    path: '/app',
+    element: <ProtectedRoute />,
     children: [
       {
-        index: true,
-        element: <App />,
+        path: 'talent',
+        element: <LayoutTalent />,
+        children: [{ path: 'profile', element: <ProfileTalent /> }],
       },
+    ],
+  },
+
+  /* --------- ESPACE ENTREPRISE --------- */
+  {
+    path: '/app/company',
+    element: <ProtectedRoute />,
+    children: [
       {
-        path: '/app',
-        element: <ProtectedRoute />,
+        element: <LayoutCompany />,
         children: [
-          {
-            path: 'profile/talent',
-            element: <Profile />,
-          },
+          { path: 'profile', element: <ProfileCompany /> },
+          { path: 'dashboard/:id_company', element: <Dashboard /> },
         ],
       },
     ],
   },
-  {
-    path: '/app/company',
-    element: <LayoutCompany />,
-    children: [
-      {
-        path: 'profile',
-        element: <ProfileCompany />,
-      },
-      {
-        path: 'dashboard/:id_company',
-        element: <Dashboard />,
-      },
-    ],
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/signup',
-    element: <SignUpWizard />,
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
+
+  /* --------- 404 --------- */
+  { path: '*', element: <NotFound /> },
 ]);
 
-createRoot(rootElement).render(
+/* ------------------- RENDER APP ------------------- */
+const root = document.getElementById('root');
+if (!root) throw new Error('Missing <div id="root"></div> in index.html');
+
+createRoot(root).render(
   <StrictMode>
     <AuthProvider>
       <StepProvider>
         <RouterProvider router={router} />
+        <ToastContainer />
       </StepProvider>
-      <ToastContainer />
     </AuthProvider>
   </StrictMode>,
 );
