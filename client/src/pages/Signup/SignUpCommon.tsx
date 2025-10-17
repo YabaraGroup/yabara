@@ -103,7 +103,7 @@ export default function SignUpCommon() {
             required
           />
 
-          <ButtonType text="Continuer" variant="primary" />
+          <ButtonType text="Continuer" variant="primary" type="submit" />
         </form>
 
         {/* Séparateur */}

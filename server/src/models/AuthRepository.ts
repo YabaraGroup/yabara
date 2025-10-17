@@ -79,12 +79,11 @@ class AuthRepository {
     try {
       // Logic to insert company data into the database
       const [rows]: any = await this.db.query(
-        `INSERT INTO ${this.tableNameCompany} (name, siren_number, siret_number, id_sector, id_role) VALUES (?, ?, ?, ?, ?)`,
+        `INSERT INTO ${this.tableNameCompany} (name, rccm_number, id_sector, id_role) VALUES (?, ?, ?, ?)`,
         [
-          companyData.name,
-          companyData.siret,
-          companyData.siret,
-          companyData.pole,
+          companyData.companyName,
+          companyData.rccm,
+          companyData.activitySector,
           2, // id role for company
         ],
       );

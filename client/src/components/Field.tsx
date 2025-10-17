@@ -9,7 +9,7 @@ type Option = {
 type FieldProps = {
   label: string;
   name: string;
-  type?: 'text' | 'number' | 'select' | 'email' | 'password' | 'textarea';
+  type?: 'text' | 'number' | 'select' | 'email' | 'password' | 'textarea' | 'tel';
   value: string;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,

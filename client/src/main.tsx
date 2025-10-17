@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import './index.css';
@@ -43,6 +43,11 @@ const router = createBrowserRouter([
   /* --------- SIGNUP (ÉTAPE COMMUNE) --------- */
   {
     path: '/signup',
+    element: (
+      <StepProvider>
+        <Outlet />
+      </StepProvider>
+    ),
     children: [
       // Étape 1 : commune
       { path: 'company', element: <SignUpCommon /> },
@@ -96,10 +101,8 @@ if (!root) throw new Error('Missing <div id="root"></div> in index.html');
 createRoot(root).render(
   <StrictMode>
     <AuthProvider>
-      <StepProvider>
-        <RouterProvider router={router} />
-        <ToastContainer />
-      </StepProvider>
+      <RouterProvider router={router} />
+      <ToastContainer />
     </AuthProvider>
   </StrictMode>,
 );

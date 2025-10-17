@@ -16,9 +16,11 @@ import {
   Pencil,
 } from 'lucide-react';
 import { api } from '../../../utils/fetch';
+import { errorToast } from '../../../utils/toast';
 
 export default function CompanyLayout() {
-  const { step, nextStep, prevStep, user } = useStep();
+  const { step, nextStep, prevStep, user, setStep } = useStep();
+
   const [pole, setPole] = useState<{ id: string; name: string }[]>([]);
   const [formData, setFormData] = useState({
     // 👤 Étape 1 : Utilisateur
@@ -39,8 +41,8 @@ export default function CompanyLayout() {
     jobTime: '', // ex: Temps plein / Temps partiel
     duration: '',
     durationUnit: '', // jours, mois, ans
-    minDuration: '',
-    maxDuration: '',
+    salaryMin: '',
+    salaryMax: '',
     salaryUnit: '', // mois, an
     description: '',
   });
@@ -49,6 +51,7 @@ export default function CompanyLayout() {
     api.get('api/company-sectors').then(response => {
       setPole(response.data.companySectors);
     });
+    setStep(1);
   }, []);
 
   const handleChange = (
@@ -60,6 +63,23 @@ export default function CompanyLayout() {
 
   const handleSelect = (field: 'jobTime' | 'contractType', value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    api
+      .post('api/auth/signup/company', { ...user, ...formData })
+      .then(response => {
+        if (response.data.ok) {
+          // rediriger vers la page de connexion
+          window.location.href = '/login';
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        errorToast('Une erreur est survenue. Veuillez réessayer.');
+      });
   };
 
   const liItems = [
@@ -126,6 +146,7 @@ export default function CompanyLayout() {
           <Field
             label="Numéro de téléphone"
             name="phone"
+            type="tel"
             value={formData.phone}
             onChange={handleChange}
           />
@@ -143,7 +164,13 @@ export default function CompanyLayout() {
             value={formData.companyName}
             onChange={handleChange}
           />
-          <Field label="Numéro RCCM" name="rccm" value={formData.rccm} onChange={handleChange} />
+          <Field
+            label="Numéro RCCM"
+            name="rccm"
+            type="number"
+            value={formData.rccm}
+            onChange={handleChange}
+          />
           <Field
             label="Pôle d’activité"
             name="activitySector"
@@ -237,6 +264,7 @@ export default function CompanyLayout() {
               <Field
                 label="Durée du contrat"
                 name="duration"
+                type="number"
                 value={formData.duration}
                 onChange={handleChange}
               />
@@ -280,15 +308,17 @@ export default function CompanyLayout() {
             <span>De</span>
             <Field
               label="Minimum"
-              name="minDuration"
-              value={formData.minDuration}
+              name="salaryMin"
+              type="number"
+              value={formData.salaryMin}
               onChange={handleChange}
             />
             <span>à</span>
             <Field
               label="Maximum"
-              name="maxDuration"
-              value={formData.maxDuration}
+              name="salaryMax"
+              type="number"
+              value={formData.salaryMax}
               onChange={handleChange}
             />
             <Field
@@ -371,7 +401,7 @@ export default function CompanyLayout() {
           <SummaryItem
             icon={<HandCoins className="text-[#5481AA]" />}
             title="Rémunération"
-            subtitle={`Entre ${formData.minDuration || '—'} et ${formData.maxDuration || '—'} ${
+            subtitle={`Entre ${formData.salaryMin || '—'} et ${formData.salaryMax || '—'} ${
               formData.salaryUnit === 'an' ? 'euros/an' : 'euros/mois'
             }`}
           />
@@ -396,12 +426,6 @@ export default function CompanyLayout() {
   ];
 
   const currentStep = steps[step - 1]; // -1 car step car on commence à 1
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    //TODO: Envoyer les données au serveur
-    console.log('Données du formulaire :', formData, user);
-  };
 
   return (
     <div className="flex h-screen bg-[#f4f8fb]">
@@ -457,9 +481,13 @@ export default function CompanyLayout() {
               </div>
 
               {step < steps.length ? (
-                <ButtonType text="Continuer" variant="primary" onClick={nextStep} />
+                <ButtonType
+                  text={step === steps.length - 1 ? 'Récapitulatif' : 'Continuer'}
+                  variant="primary"
+                  onClick={nextStep}
+                />
               ) : (
-                <ButtonType text="Terminer" variant="primary" />
+                <ButtonType text="Confirmer l'envoi" variant="primary" onClick={handleSubmit} />
               )}
             </div>
           </form>
