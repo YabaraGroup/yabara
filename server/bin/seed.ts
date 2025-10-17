@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { faker } from '@faker-js/faker';
 import mysql from 'mysql2/promise';
+import argon2 from 'argon2';
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
@@ -77,7 +78,7 @@ async function seed() {
         firstname,
         lastname,
         email,
-        '$argon2id$v=19$m=65536,t=5,p=1$LLauITs5RTcPIWN7Lwq9Zg$AaHqSr2whYJg+Iy0HhFUmFV1Y85fre0TJq/uNbThp0M', // Pre-hashed password
+        await argon2.hash('Azerty.123'), // Default password
         phone,
         id_company,
       ],
@@ -141,7 +142,7 @@ async function seed() {
         firstname,
         lastname,
         email,
-        '$argon2id$v=19$m=65536,t=5,p=1$LLauITs5RTcPIWN7Lwq9Zg$AaHqSr2whYJg+Iy0HhFUmFV1Y85fre0TJq/uNbThp0M', // Pre-hashed password
+        await argon2.hash('Azerty.123'), // Default password
         phone,
         identification,
         education_level,
@@ -153,6 +154,100 @@ async function seed() {
     );
     talentIds.push(result.insertId);
   }
+
+  // --- TEST ACCOUNTS ---
+  console.log('🧩 Inserting test accounts...');
+
+  // Company + Contact
+  const [companyResult]: any = await connection.query(
+    `INSERT INTO company (name, rccm_number, headcount, logo_url, founded_year, address, website_url, id_sector, id_role)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      'Yabara Company Test',
+      'YAB12345',
+      50,
+      'https://placehold.co/200x200',
+      2020,
+      '123 Rue du Code, Paris',
+      'https://yabara.co',
+      3,
+      roleCompany,
+    ],
+  );
+  const companyId = companyResult.insertId;
+
+  await connection.query(
+    `INSERT INTO company_contact (firstname, lastname, email, password, phone, id_company)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [
+      'John',
+      'Manager',
+      'company@yabara.co',
+      await argon2.hash('company123'),
+      '+33123456789',
+      companyId,
+    ],
+  );
+
+  // --- 10 Job Offers for Yabara Company Test ---
+  console.log('💼 Inserting 10 job offers for Yabara Company Test...');
+  for (let i = 0; i < 10; i++) {
+    await connection.query(
+      `INSERT INTO job_offer (title, description, time_commitment, contract_type, delay_contract, salary_min, salary_max, recurring_salary, location, reference_number, id_company)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        faker.person.jobTitle(),
+        faker.lorem.paragraphs(2),
+        getRandom(['fullTime', 'partTime']),
+        getRandom(['CDI', 'CDD', 'Stage', 'Alternance', 'Freelance']),
+        faker.number.int({ min: 1, max: 60 }) + ' mois',
+        faker.number.int({ min: 1000, max: 2000 }),
+        faker.number.int({ min: 2000, max: 4000 }),
+        getRandom(['mois', 'an']),
+        faker.location.city(),
+        'YAB-OFF-' + faker.string.alphanumeric({ length: 6 }).toUpperCase(),
+        companyId,
+      ],
+    );
+  }
+
+  // Talent test
+  await connection.query(
+    `INSERT INTO talent (firstname, lastname, email, password, phone, identification, education_level, avatar_url, referral_link, id_job_family, id_role)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      'Anthony',
+      'Talent',
+      'talent@yabara.co',
+      await argon2.hash('talent123'),
+      '+33698765432',
+      'TAL12345',
+      'Master',
+      'https://placehold.co/200x200',
+      'https://yabara.co',
+      getRandom(jobFamilies as any[]).id,
+      1,
+    ],
+  );
+
+  // Admin test
+  await connection.query(
+    `INSERT INTO talent (firstname, lastname, email, password, phone, identification, education_level, avatar_url, referral_link, id_job_family, id_role)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      'Admin',
+      'Yabara',
+      'admin@yabara.co',
+      await argon2.hash('admin123'),
+      '+33111222333',
+      'ADM001',
+      'N/A',
+      'https://placehold.co/200x200',
+      'https://yabara.co/admin',
+      getRandom(jobFamilies as any[]).id,
+      3,
+    ],
+  );
 
   console.log('✅ Done seeding database.');
   await connection.end();
