@@ -245,7 +245,7 @@ async function seed() {
       'https://placehold.co/200x200',
       'https://yabara.co/admin',
       getRandom(jobFamilies as any[]).id,
-      3,
+      1,
     ],
   );
 
