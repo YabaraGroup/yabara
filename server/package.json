@@ -6,6 +6,9 @@
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
     "build": "tsc && cp -r database/*.sql dist/database/",
     "start": "node dist/server.js",
+    "db:seed": "if [ \"$NODE_ENV\" = \"production\" ]; then npm run db:seed:prod; else npm run db:seed:dev; fi",
+    "db:seed:dev": "tsx bin/seed.ts",
+    "db:seed:prod": "node ../dist/bin/seed.js",
     "db:migrate:dev": "tsx bin/migrate.ts",
     "db:migrate:prod": "node ../dist/bin/migrate.js",
     "db:migrate": "if [ \"$NODE_ENV\" = \"production\" ]; then npm run db:migrate:prod; else npm run db:migrate:dev; fi"
@@ -25,6 +28,7 @@
     "zod": "^4.1.8"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.1.0",
     "@types/argon2": "^0.14.1",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",

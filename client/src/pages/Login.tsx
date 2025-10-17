@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FaLinkedin } from 'react-icons/fa';
 import { successToast, errorToast } from '../utils/toast';
@@ -17,7 +17,9 @@ function Login() {
   const { login } = useAuth();
   const nav = useNavigate();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setUser(prev => ({ ...prev, [name]: value }));
   };
@@ -57,11 +59,13 @@ function Login() {
       {/* Colonne gauche : formulaire (40%) */}
       <div className="flex flex-col justify-center w-full md:w-[40%] bg-white rounded-lg shadow-lg px-6 md:px-12 py-10">
         {/* Logo */}
-        <div className="mb-10 flex justify-start">
+        <Link to="/" className="mb-10 flex justify-start">
           <img src="/logo.png" alt="Yabara Logo" className="h-10" />
-        </div>
+        </Link>
 
-        <h2 className="text-3xl font-bold mb-3">Diffusez votre première offre</h2>
+        <h2 className="text-3xl mb-3">
+          Bienvenue sur <span className="font-semibold">Yabara</span>
+        </h2>
         <p className="text-gray-500 mb-8">Veuillez remplir les champs suivants</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
@@ -121,7 +125,7 @@ function Login() {
         <div className="absolute inset-0 bg-black opacity-25" />
         <div className="absolute bottom-15 left-15 text-white drop-shadow-lg ">
           <h3 className="text-4xl font-semibold">Accédez à la plateforme</h3>
-          <p className="text-gray-200 text-2xl ">
+          <p className="text-gray-200 text-2xl font-light mt-2">
             Et entrez en contact avec des millions de talents
           </p>
         </div>

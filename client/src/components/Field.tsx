@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
 type Option = {
@@ -9,12 +9,15 @@ type Option = {
 type FieldProps = {
   label: string;
   name: string;
-  type?: 'text' | 'number' | 'select' | 'email' | 'password';
+  type?: 'text' | 'number' | 'select' | 'email' | 'password' | 'textarea' | 'tel';
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => void;
   disabled?: boolean;
   options?: Option[];
   required?: boolean;
+  rows?: number; // facultatif pour textarea
 };
 
 export default function Field({
@@ -26,6 +29,7 @@ export default function Field({
   onChange,
   options = [],
   required = false,
+  rows = 4,
 }: FieldProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -38,6 +42,7 @@ export default function Field({
         {label} {required && <span className="text-red-500">*</span>}
       </label>
 
+      {/* --- SELECT --- */}
       {type === 'select' ? (
         <select
           id={name}
@@ -45,7 +50,8 @@ export default function Field({
           value={value}
           onChange={onChange}
           required={required}
-          className="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black focus:outline-none pr-10"
+          disabled={disabled}
+          className="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black focus:outline-none pr-10 bg-[#F4F4F4]"
         >
           <option value="">-- Choisir --</option>
           {options.map(opt => (
@@ -54,7 +60,21 @@ export default function Field({
             </option>
           ))}
         </select>
+      ) : /* --- TEXTAREA --- */
+      type === 'textarea' ? (
+        <textarea
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          required={required}
+          disabled={disabled}
+          rows={rows}
+          placeholder={label}
+          className="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black focus:outline-none bg-[#F4F4F4] resize-none"
+        />
       ) : (
+        /* --- INPUT --- */
         <div className="relative">
           <input
             id={name}
@@ -65,13 +85,15 @@ export default function Field({
             disabled={disabled}
             onChange={onChange}
             required={required}
-            className="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black focus:outline-none pr-10"
+            className="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-black focus:outline-none pr-10 bg-[#F4F4F4]"
           />
+
+          {/* --- Password toggle --- */}
           {isPassword && (
             <button
               type="button"
               onClick={() => setShowPassword(prev => !prev)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-dark-gold"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-[#5481AA] hover:text-black focus:outline-none"
             >
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>

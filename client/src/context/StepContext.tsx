@@ -46,6 +46,8 @@ interface StepContextType {
   setCompany: React.Dispatch<React.SetStateAction<Company>>;
 
   handleSubmit: () => boolean | Promise<boolean>;
+
+  setStep: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function createIdentifier(phoneNumber: string, firstname: string, lastname: string): string {
@@ -171,6 +173,7 @@ export function StepProvider({ children }: { children: React.ReactNode }) {
     company,
     setCompany,
     handleSubmit,
+    setStep,
   };
 
   return <StepContext.Provider value={value}>{children}</StepContext.Provider>;

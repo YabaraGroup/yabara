@@ -29,8 +29,7 @@ CREATE TABLE company_sector (
 CREATE TABLE company (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(150) NOT NULL,
-  siren_number VARCHAR(20) NOT NULL UNIQUE,
-  siret_number VARCHAR(20) NOT NULL UNIQUE,
+  rccm_number VARCHAR(20) NOT NULL UNIQUE,
   headcount INT,
   logo_url VARCHAR(255),
   founded_year YEAR,
@@ -51,7 +50,7 @@ CREATE TABLE company_contact (
   lastname VARCHAR(100) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
-  phone VARCHAR(20),
+  phone VARCHAR(20) NOT NULL,
   id_company INT NOT NULL,
   CONSTRAINT fk_company_contact_company FOREIGN KEY (id_company) REFERENCES company(id)
 );
@@ -73,17 +72,16 @@ CREATE TABLE job_offer (
   id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(150) NOT NULL,
   description TEXT,
+  time_commitment VARCHAR(50),
   contract_type VARCHAR(50),
-  required_degree VARCHAR(100),
-  required_experience VARCHAR(100),
-  salary DECIMAL(10,2),
+  delay_contract VARCHAR(50),
+  salary_min DECIMAL(10,2),
+  salary_max DECIMAL(10,2),
+  recurring_salary VARCHAR(50),
   location VARCHAR(150),
-  deadline DATE,
   reference_number VARCHAR(50) NOT NULL UNIQUE,
   id_company INT NOT NULL,
-  id_job_family INT NOT NULL,
-  CONSTRAINT fk_job_offer_company FOREIGN KEY (id_company) REFERENCES company(id),
-  CONSTRAINT fk_job_offer_job_family FOREIGN KEY (id_job_family) REFERENCES job_family(id)
+  CONSTRAINT fk_job_offer_company FOREIGN KEY (id_company) REFERENCES company(id)
 );
 
 -- ========================
@@ -105,6 +103,27 @@ CREATE TABLE talent (
   CONSTRAINT fk_talent_job_family FOREIGN KEY (id_job_family) REFERENCES job_family(id),
   CONSTRAINT fk_talent_role FOREIGN KEY (id_role) REFERENCES role(id)
 );
+
+CREATE TABLE permission (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE role_permission (
+  id_role INT NOT NULL,
+  id_permission INT NOT NULL,
+  PRIMARY KEY (id_role, id_permission),
+  CONSTRAINT fk_rp_role FOREIGN KEY (id_role) REFERENCES role(id),
+  CONSTRAINT fk_rp_permission FOREIGN KEY (id_permission) REFERENCES permission(id)
+);
+
+
+ALTER TABLE company
+  ADD CONSTRAINT chk_company_role CHECK (id_role IN (2)); -- 2 = "company"
+
+ALTER TABLE talent
+  ADD CONSTRAINT chk_talent_role CHECK (id_role IN (1)); -- 1 = "user"
+
 
 -- ========================
 -- APPLY

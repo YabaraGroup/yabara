@@ -1,6 +1,7 @@
 import type { RequestHandler } from 'express';
 import AuthRepository from '../../models/AuthRepository';
 import jwtMiddleware from '../../middleware/jwtMiddleware';
+import JobOfferRepository from '../../models/JobOfferRepository';
 
 /**
  * Create a new user account
@@ -29,6 +30,10 @@ const createUser: RequestHandler = async (req, res, next) => {
  * @returns {Promise<unknown>}
  */
 const createCompany: RequestHandler = async (req, res, next) => {
+  /**
+   * Pour que l'application arrive à savegarder toutes les données nécessaires à la création, il faut d'abord créer la company, puis le company_contact et pour finir job_offers.
+   */
+
   try {
     const companyId = await AuthRepository.createCompany(req.body);
 
@@ -36,6 +41,13 @@ const createCompany: RequestHandler = async (req, res, next) => {
     await AuthRepository.createCompanyUser({
       ...req.body,
       id_company: companyId,
+    });
+
+    // create job_offers
+    await JobOfferRepository.create({
+      ...req.body,
+      id_company: companyId,
+      referenceNumber: `REF-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
     });
 
     return res.status(201).json({ ok: true, message: 'Company created and contact added' });

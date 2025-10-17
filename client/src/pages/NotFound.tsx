@@ -12,7 +12,7 @@ function NotFound() {
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <Link
-            to="/app"
+            to="/"
             className="rounded-md bg-gold px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-dark-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold dark:text-gold dark:hover:bg-gold dark:focus-visible:outline-dark-gold"
           >
             Retour à l'accueil

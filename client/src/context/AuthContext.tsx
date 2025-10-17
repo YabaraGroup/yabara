@@ -1,92 +1,79 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 import { authApi } from '../utils/fetch';
 import { infoToast } from '../utils/toast';
+import { authReducer, initialAuthState } from '../reducers/authReducer';
+import type { AuthState } from '../reducers/authReducer';
+import type { User } from '../types/User';
 
-interface AuthContextType {
-  isAuthenticated: boolean;
-  user: any | null;
-  loading: boolean;
-  login: (user: any) => void;
+interface AuthContextType extends AuthState {
+  login: (user: User) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
-  // ✅ 1. Vérifie la session au chargement de l'app
+  const LOCAL_STORAGE_USER_KEY = 'user';
+
+  // ✅ Vérifie la session au démarrage
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
 
     if (storedUser) {
-      // on restaure d'abord les infos locales (plus rapide)
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
+      dispatch({ type: 'CHECK_SESSION_SUCCESS', payload: JSON.parse(storedUser) });
     }
 
-    // puis on vérifie la session côté serveur
     authApi
       .get('/api/auth/check')
       .then(res => {
         if (res.data?.ok && res.data?.user) {
-          setUser(res.data.user);
-          setIsAuthenticated(true);
-          localStorage.setItem('user', JSON.stringify(res.data.user));
+          dispatch({ type: 'CHECK_SESSION_SUCCESS', payload: res.data.user });
+          localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(res.data.user));
         } else {
-          setUser(null);
-          setIsAuthenticated(false);
-          localStorage.removeItem('user');
+          dispatch({ type: 'CHECK_SESSION_FAIL' });
+          localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
         }
       })
       .catch(() => {
-        setUser(null);
-        setIsAuthenticated(false);
-        localStorage.removeItem('user');
+        dispatch({ type: 'CHECK_SESSION_FAIL' });
+        localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
       })
       .finally(() => {
-        setLoading(false);
+        dispatch({ type: 'STOP_LOADING' });
       });
   }, []);
 
-  // ✅ 2. Connexion : met à jour le state et localStorage
-  const login = (user: any) => {
-    setUser(user);
-    setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(user));
+  // ✅ Connexion
+  const login = (user: User) => {
+    localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(user));
+    dispatch({ type: 'LOGIN', payload: user });
   };
 
-  // ✅ 3. Déconnexion : nettoie tout + logout côté serveur
-  const logout = () => {
-    authApi
-      .post('/api/auth/logout')
-      .then(() => {
-        infoToast('You have been logged out');
-      })
-      .catch((err: unknown) => {
-        console.error('Logout failed', err);
-      })
-      .finally(() => {
-        localStorage.removeItem('user');
-        setUser(null);
-        setIsAuthenticated(false);
-      });
+  // ✅ Déconnexion
+  const logout = async () => {
+    try {
+      await authApi.post('/api/auth/logout');
+      infoToast('You have been logged out');
+    } catch (err) {
+      console.error('Logout failed', err);
+    } finally {
+      localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+      dispatch({ type: 'LOGOUT' });
+    }
   };
 
-  const authValue: AuthContextType = {
-    isAuthenticated,
-    user,
-    loading,
+  const value: AuthContextType = {
+    ...state,
     login,
     logout,
   };
 
-  return <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// ✅ Hook custom sécurisé
+// ✅ Hook sécurisé
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
